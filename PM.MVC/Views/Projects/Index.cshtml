@@ -1,0 +1,60 @@
+﻿@model IEnumerable<Project>
+
+@{
+  ViewData["Title"] = "Index";
+}
+
+<div class="container">
+
+  @foreach (Project item in Model)
+  {
+    <div class="d-flex justify-content-between mb-3 mt-3">
+      <div class="border-dark card" style="width: 100%;">
+        <div class="card-body text-dark">
+          <h1 class="display-4">
+            <a class="card-link" asp-action="Details" asp-route-id="@item.Id">@item.Name</a>
+          </h1>
+        </div>
+
+        <div class="align-items-center card-footer d-flex justify-content-between text-muted">
+          <div>Resources count:</div>
+          <small>@item.ProjectResources.Count</small>
+        </div>
+      </div>
+
+      <div class="d-flex flex-column justify-content-between ml-3">
+        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning">Edit</a>
+        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger" data-toggle="modal" data-target="#exampleModalCenter@(item.Id)">Delete</a>
+      </div>
+
+      <!-- Modal -->
+      <div class="fade modal" id="exampleModalCenter@(item.Id)" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLongTitle">Delete</h5>
+              <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              @($"Are you sure you want to delete `{item.Name}`?")
+            </div>
+            <div class="modal-footer">
+              <button class="btn btn-secondary" data-dismiss="modal" type="button">No</button>
+
+              <form asp-action="Delete" asp-route-id="@item.Id" method="post" role="form">
+                <input class="btn btn-danger" type="submit" value="Yes"/>
+              </form>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  }
+
+  <a asp-action="Create" class="btn btn-lg btn-primary mb-5">New project</a>
+
+</div>

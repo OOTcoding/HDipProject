@@ -1,0 +1,77 @@
+﻿@model Resource
+
+@{
+  ViewData["Title"] = "Edit";
+}
+
+<div class="d-flex justify-content-center m-5">
+  <div class="card card-outline-secondary w-75">
+    <div class="card-header">
+      <h3 class="display-4 mb-1">Edit Resource</h3>
+    </div>
+    <div class="card-body">
+
+      <form asp-action="Edit" method="post" role="form">
+
+        <div class="form-group row">
+          <label asp-for="Name" class="col-form-label col-lg-3 form-control-label"></label>
+          <div class="col-lg-9">
+            <input asp-for="Id" type="hidden"/>
+            <input asp-for="Name" class="form-control"/>
+            <span asp-validation-for="Name" class="text-danger"></span>
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <label class="col-form-label col-lg-3 form-control-label">Qualifications</label>
+          <div class="col-lg-9">
+
+            <table class="table table-sm">
+              <thead>
+              <tr>
+                <th scope="col">Skill</th>
+                <th scope="col">Level</th>
+                <th scope="col"></th>
+              </tr>
+              </thead>
+              <tbody>
+
+              @foreach (QualificationResource item in Model.QualificationResources)
+              {
+                <tr>
+                  <td>@item.Qualification.Skill.Name</td>
+                  <td>@item.Qualification.Level.ToString()</td>
+                  <td>
+
+                    <div class="col-lg-9">
+
+                      <form asp-action="DeleteQualification" asp-controller="Resources" asp-route-id="@item.ResourceId" asp-route-qualificationId="@item.QualificationId" method="post">
+                        <input class="btn btn-danger" type="submit" value="Delete"/>
+                      </form>
+
+                    </div>
+
+                  </td>
+                </tr>
+              }
+
+              </tbody>
+            </table>
+
+            <a asp-action="AddQualification" asp-controller="Resources" asp-route-id="@Model.Id" class="btn btn-primary">Add new qualification</a>
+
+          </div>
+        </div>
+
+        <div class="form-group justify-content-center row">
+          <div class="col-lg-6">
+            <a asp-action="Index" class="btn btn-secondary" onClick="history.go(-1);return false;">Back</a>
+            <input class="btn btn-success" type="submit" value="Save Changes"/>
+          </div>
+        </div>
+      </form>
+
+    </div>
+  </div>
+
+</div>

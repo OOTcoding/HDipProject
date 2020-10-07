@@ -1,0 +1,101 @@
+﻿@model Project
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<div class="container mt-3">
+  <div class="jumbotron pb-1">
+    <h1 class="display-4">@Model.Name</h1>
+    <p class="lead">Requirements:</p>
+
+    <table class="table table-sm">
+      <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Skill</th>
+        <th scope="col">Level</th>
+        <th scope="col"></th>
+      </tr>
+      </thead>
+      <tbody>
+
+      @foreach (ProjectQualification item in Model.ProjectQualifications)
+      {
+        <tr>
+          <th scope="row">@item.QualificationId</th>
+          <td>@item.Qualification.Skill.Name</td>
+          <td>@item.Qualification.Level.ToString()</td>
+          <td>
+
+            <form asp-action="DeleteQualification" asp-route-id="@Model.Id" asp-route-qualificationId="@item.QualificationId" method="post">
+              <input class="btn btn-danger" type="submit" value="Delete"/>
+            </form>
+
+          </td>
+        </tr>
+      }
+
+      </tbody>
+    </table>
+
+    <a asp-action="AddQualifications" asp-route-id="@Model.Id" class="btn btn-primary btn-sm mb-3">Add Requirement</a>
+
+  </div>
+
+  <div class="text-center">
+      <h1 class="display-4">Project Resources</h1>
+  </div>
+
+  <table class="table">
+    <thead class="thead-dark">
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Name</th>
+      <th scope="col"></th>
+      <th scope="col"></th>
+    </tr>
+    </thead>
+
+    <tbody class="accordion" id="accordionExample">
+
+    @foreach (var item in Model.ProjectResources)
+    {
+      <tr>
+        <th scope="row">@item.ResourceId</th>
+        <td>@item.Resource.Name</td>
+        <td class="w-50">
+
+          <button class="btn btn-link collapsed p-0" type="button" data-toggle="collapse" data-target="#collapseOne@(item.ResourceId)" aria-expanded="false" aria-controls="collapseOne@(item.ResourceId)">
+            Qualifications
+          </button>
+
+          <ul id="collapseOne@(item.ResourceId)" class="collapse" aria-labelledby="headingOne@(item.ResourceId)" data-parent="#accordionExample">
+            @foreach (var q in item.Resource.QualificationResources.Select(x => x.Qualification.ToString()))
+            {
+              <li>@q</li>
+            }
+          </ul>
+
+        </td>
+        <td>
+
+          <form asp-action="DeleteResource" asp-route-id="@Model.Id" asp-route-resourceId="@item.ResourceId" method="post">
+            <input class="btn btn-danger" type="submit" value="Delete"/>
+          </form>
+
+        </td>
+      </tr>
+    }
+
+    </tbody>
+  </table>
+
+
+  @Html.ActionLink("Add resource", "AddResources", new { id = Model.Id }, new { @class = "btn btn-primary mb-5" })
+</div>
+
+
+<p>
+  @Html.ActionLink("Back to List", "Index")
+</p>

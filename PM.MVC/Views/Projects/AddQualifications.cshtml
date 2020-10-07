@@ -1,0 +1,46 @@
+﻿@model ChooseQualificationsViewModel
+
+@{
+  ViewData["Title"] = "Choose qualifications";
+}
+
+<h1 class="display-4 m-1">Choose qualifications</h1>
+
+<form asp-action="AddQualifications" asp-controller="Projects" method="post" role="form">
+  <table class="table">
+    <thead class="thead-dark">
+    <tr>
+      <th scope="col"></th>
+      <th scope="col">#</th>
+      <th scope="col">Skill</th>
+      <th scope="col">Level</th>
+    </tr>
+    </thead>
+
+    @for (int i = 0; i < Model.SuitableQualifications.Count; i++)
+    {
+  <tr>
+
+      <th scope="row">
+          <input asp-for="@Model.SuitableQualifications[i].IsChecked" />
+      </th>
+      <td>
+          <input asp-for="@Model.SuitableQualifications[i].Qualification.Id" type="hidden" />@Model.SuitableQualifications[i].Qualification.Id
+      </td>
+      <td>
+          <input asp-for="@Model.SuitableQualifications[i].Qualification.Skill.Name" type="hidden" />@Model.SuitableQualifications[i].Qualification.Skill.Name
+      </td>
+      <td>
+          <input asp-for="@Model.SuitableQualifications[i].Qualification.Level" type="hidden" />@Model.SuitableQualifications[i].Qualification.Level
+      </td>
+
+  </tr>
+    }
+
+  </table>
+
+  <div class="col-lg-9">
+    <a asp-area="" class="btn btn-secondary" onClick="history.go(-1);return false;">Back</a>
+    <input class="btn btn-primary" type="submit" value="Submit"/>
+  </div>
+</form>

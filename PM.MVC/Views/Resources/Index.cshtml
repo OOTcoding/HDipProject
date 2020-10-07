@@ -1,0 +1,81 @@
+﻿@model IEnumerable<Resource>
+
+@{
+  ViewData["Title"] = "Index";
+}
+
+<div class="text-center m-4">
+  <h2 class="display-4">All resources in db</h2>
+</div>
+
+<table class="table">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">#</th>
+      <th>
+        @Html.DisplayNameFor(model => model.Name)
+      </th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody class="accordion" id="accordionExample">
+    @foreach (Resource item in Model)
+    {
+      <tr>
+        <th scope="row">@item.Id</th>
+        <td>@item.Name</td>
+        <td class="w-50">
+
+          <button class="btn btn-link collapsed p-0" type="button" data-toggle="collapse" data-target="#collapseOne@(item.Id)" aria-expanded="false" aria-controls="collapseOne@(item.Id)">
+            Qualifications
+          </button>
+
+          <ul id="collapseOne@(item.Id)" class="collapse" aria-labelledby="headingOne@(item.Id)" data-parent="#accordionExample">
+            @foreach (var q in item.QualificationResources.Select(x => x.Qualification.ToString()))
+            {
+              <li>@q</li>
+            }
+          </ul>
+
+        </td>
+        <td>
+          <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+          <a asp-action="Delete" asp-route-id="@item.Id" data-toggle="modal" data-target="#exampleModalCenter@(item.Id)">Delete</a>
+        </td>
+
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModalCenter@(item.Id)" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Delete</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                @($"Are you sure you want to delete `id:{item.Id}, {item}`?")
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+
+                <form asp-action="Delete" asp-route-id="@item.Id" method="post" role="form">
+                  <input class="btn btn-danger" type="submit" value="Yes"/>
+                </form>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </tr>
+    }
+
+  </tbody>
+</table>
+
+<div class="col-lg-9">
+  <a asp-area="" class="btn btn-secondary" asp-action="Index" asp-controller="Projects">Back</a>
+  <a asp-action="Create" class="btn btn-primary">Create New</a>
+</div>

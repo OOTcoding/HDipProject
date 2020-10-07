@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.EntityFrameworkCore;
 
 namespace PM.MVC.Models.EF
@@ -48,7 +49,7 @@ namespace PM.MVC.Models.EF
             modelBuilder.Entity<Skill>().HasData(new List<Skill> { csharpSkill, excelSkill, drivingSkill, managerSkill });
 
             // initializing qualifications
-            var csharpJunior = new Qualification { Id = 1, Level = SkillLevel.Junior, SkillId = csharpSkill.Id};
+            var csharpJunior = new Qualification { Id = 1, Level = SkillLevel.Junior, SkillId = csharpSkill.Id };
             var excelJunior = new Qualification { Id = 2, Level = SkillLevel.Junior, SkillId = excelSkill.Id };
             var drivingJunior = new Qualification { Id = 3, Level = SkillLevel.Junior, SkillId = drivingSkill.Id };
             var managerJunior = new Qualification { Id = 4, Level = SkillLevel.Junior, SkillId = managerSkill.Id };
@@ -108,41 +109,17 @@ namespace PM.MVC.Models.EF
 
         private static IEnumerable<ProjectQualification> InitProjectQualification(Project project, params Qualification[] qualifications)
         {
-            var projectQualifications = new List<ProjectQualification>();
-            foreach (Qualification qualification in qualifications)
-            {
-                projectQualifications.Add(new ProjectQualification
-                {
-                    QualificationId = qualification.Id, ProjectId = project.Id
-                });
-            }
-
-            return projectQualifications;
+            return qualifications.Select(qualification => new ProjectQualification { QualificationId = qualification.Id, ProjectId = project.Id }).ToList();
         }
 
-        private static List<ProjectResource> InitProjectResource(Project project, params Resource[] resources)
+        private static IEnumerable<ProjectResource> InitProjectResource(Project project, params Resource[] resources)
         {
-            var projectResources = new List<ProjectResource>();
-            foreach (Resource resource in resources)
-            {
-                projectResources.Add(new ProjectResource { ResourceId = resource.Id, ProjectId = project.Id });
-            }
-
-            return projectResources;
+            return resources.Select(resource => new ProjectResource { ResourceId = resource.Id, ProjectId = project.Id }).ToList();
         }
 
-        private static List<QualificationResource> InitQualificationResources(Resource resource, params Qualification[] qualifications)
+        private static IEnumerable<QualificationResource> InitQualificationResources(Resource resource, params Qualification[] qualifications)
         {
-            var qualificationResources = new List<QualificationResource>();
-            foreach (Qualification qualification in qualifications)
-            {
-                qualificationResources.Add(new QualificationResource
-                {
-                    QualificationId = qualification.Id,ResourceId = resource.Id
-                });
-            }
-
-            return qualificationResources;
+            return qualifications.Select(qualification => new QualificationResource { QualificationId = qualification.Id, ResourceId = resource.Id }).ToList();
         }
     }
 }
