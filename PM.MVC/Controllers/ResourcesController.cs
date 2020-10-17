@@ -62,7 +62,7 @@ namespace PM.MVC.Controllers
                 return RedirectToAction("Index");
             }
 
-            return View(resource);
+            return RedirectToAction("Index");
         }
 
         // POST: Resources/Delete/5

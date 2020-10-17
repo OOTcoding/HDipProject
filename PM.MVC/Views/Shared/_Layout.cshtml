@@ -17,10 +17,19 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse d-sm-inline-flex flex-sm-row-reverse navbar-collapse">
+                    <partial name="_LoginPartial" />
                     <ul class="flex-grow-1 navbar-nav">
-                        @Html.ActiveActionLink("Qualifications", "Index", "Qualifications", null, new { @class = "nav-link" })
-                        @Html.ActiveActionLink("Resources", "Index", "Resources", null, new { @class = "nav-link" })
-                        @Html.ActiveActionLink("Skills", "Index", "Skills", null, new { @class = "nav-link" })
+
+                        <li class="nav-item" active-when="/Qualifications/Index">
+                            <a asp-action="Index" asp-area="" asp-controller="Qualifications" class="nav-link">Qualifications</a>
+                        </li>
+                        <li class="nav-item" active-when="/Resources/Index">
+                            <a asp-action="Index" asp-area="" asp-controller="Resources" class="nav-link">Resources</a>
+                        </li>
+                        <li class="nav-item" active-when="/Skills/Index">
+                            <a asp-action="Index" asp-area="" asp-controller="Skills" class="nav-link">Skills</a>
+                        </li>
+
                     </ul>
                 </div>
             </div>

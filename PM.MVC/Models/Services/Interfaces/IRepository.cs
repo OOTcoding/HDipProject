@@ -5,6 +5,7 @@ namespace PM.MVC.Models.Services.Interfaces
 {
     public interface IRepository<T>
     {
+        //Implements basic CRUD methods
         Task<T> GetOneAsync(int id);
         Task<IEnumerable<T>> GetAllAsync();
         Task<T> AddAsync(T createRequest);

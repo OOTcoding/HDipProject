@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.EntityFrameworkCore;
@@ -28,6 +29,7 @@ namespace PM.MVC
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<PMAppDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<PMAppDbContext>();
             services.AddScoped<IProjectRepository, ProjectRepository>();
             services.AddScoped<IRepository<Qualification>, QualificationRepository>();
             services.AddScoped<IQualificationRepository<Resource>, ResourceRepository>();
@@ -55,7 +57,7 @@ namespace PM.MVC
             app.UseStaticFiles();
 
             app.UseRouting();
-
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

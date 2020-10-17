@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace PM.MVC.Models.EF
 {
-    public class PMAppDbContext : DbContext
+    public class PMAppDbContext : IdentityDbContext<IdentityUser>
     {
         public PMAppDbContext(DbContextOptions<PMAppDbContext> options)
             : base(options)
@@ -28,6 +30,8 @@ namespace PM.MVC.Models.EF
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
             modelBuilder.Entity<ProjectQualification>().HasKey(x => new { x.ProjectId, x.QualificationId });
             modelBuilder.Entity<ProjectQualification>().HasOne(x => x.Project).WithMany(x => x.ProjectQualifications).HasForeignKey(x => x.ProjectId);
             modelBuilder.Entity<ProjectQualification>().HasOne(x => x.Qualification).WithMany(x => x.ProjectQualification).HasForeignKey(x => x.QualificationId);
@@ -107,6 +111,7 @@ namespace PM.MVC.Models.EF
             modelBuilder.Entity<QualificationResource>().HasData(jhonQualificationResources);
         }
 
+        //для чего создаем эти интерфейсы?
         private static IEnumerable<ProjectQualification> InitProjectQualification(Project project, params Qualification[] qualifications)
         {
             return qualifications.Select(qualification => new ProjectQualification { QualificationId = qualification.Id, ProjectId = project.Id }).ToList();
