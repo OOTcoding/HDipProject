@@ -111,7 +111,6 @@ namespace PM.MVC.Models.EF
             modelBuilder.Entity<QualificationResource>().HasData(jhonQualificationResources);
         }
 
-        //для чего создаем эти интерфейсы?
         private static IEnumerable<ProjectQualification> InitProjectQualification(Project project, params Qualification[] qualifications)
         {
             return qualifications.Select(qualification => new ProjectQualification { QualificationId = qualification.Id, ProjectId = project.Id }).ToList();

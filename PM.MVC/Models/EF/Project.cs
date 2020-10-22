@@ -12,7 +12,7 @@ namespace PM.MVC.Models.EF
         [StringLength(50, MinimumLength = 3, ErrorMessage = "Line length must be between 3 and 50 characters")]
         public string Name { get; set; }
 
-        [JsonIgnore]
+        [JsonIgnore] //Serialization  
         public virtual ICollection<ProjectQualification> ProjectQualifications { get; set; }
 
         [JsonIgnore]

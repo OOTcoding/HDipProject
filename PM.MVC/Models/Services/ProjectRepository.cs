@@ -10,7 +10,8 @@ using PM.MVC.Models.Services.Interfaces;
 
 namespace PM.MVC.Models.Services
 {
-    public class ProjectRepository: IDisposable, IProjectRepository
+    //using repository pattern to decouple architecture from framework to allow loose coupling (Clean Architecture "Uncle Bob”)
+    public class ProjectRepository : IDisposable, IProjectRepository
     {
         private readonly PMAppDbContext _context;
 
@@ -56,9 +57,10 @@ namespace PM.MVC.Models.Services
         {
             Project dbProject = await GetDbProject(projectId);
 
-            var qualifications = await _context.Qualifications.ToArrayAsync();
-
-            return qualifications.Where(qualification => dbProject.ProjectQualifications.All(p => p.QualificationId != qualification.Id));
+            var qualifications = await _context.Qualifications.ToArrayAsync(); // get all qualifications 
+                                                                               // compare project qualif with list of all qualif and return mathcing qualifications
+            return qualifications.Where(qualification => dbProject
+                                                                  .ProjectQualifications.All(p => p.QualificationId != qualification.Id));
         }
 
         public async Task<Project> AddAsync(Project createRequest)
@@ -146,7 +148,10 @@ namespace PM.MVC.Models.Services
             {
                 ProjectQualification projectQualification = new ProjectQualification
                 {
-                    Project = dbProject, ProjectId = projectId, Qualification = qualification, QualificationId = qualification.Id
+                    Project = dbProject,
+                    ProjectId = projectId,
+                    Qualification = qualification,
+                    QualificationId = qualification.Id
                 };
                 dbProject.ProjectQualifications.Add(projectQualification);
                 qualification.ProjectQualification.Add(projectQualification);
@@ -168,7 +173,10 @@ namespace PM.MVC.Models.Services
             {
                 ProjectQualification projectQualification = new ProjectQualification
                 {
-                    Project = dbProject, ProjectId = id, Qualification = qualification, QualificationId = qualification.Id
+                    Project = dbProject,
+                    ProjectId = id,
+                    Qualification = qualification,
+                    QualificationId = qualification.Id
                 };
                 dbProject.ProjectQualifications.Add(projectQualification);
                 qualification.ProjectQualification.Add(projectQualification);

@@ -1,16 +1,12 @@
-﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
-for details on configuring this project to bundle and minify static web assets. */
-
-a.navbar-brand {
-  white-space: normal;
-  text-align: center;
-  word-break: break-all;
+﻿a.navbar-brand {
+    white-space: normal;
+    text-align: center;
+    word-break: break-all;
 }
 
 /* Provide sufficient contrast against white background */
-a {
-  color: #0366d6;
-}
+
+a {  color: #0366d6;}
 
 .btn-primary {
   color: #fff;
@@ -26,46 +22,95 @@ a {
 
 /* Sticky footer styles
 -------------------------------------------------- */
-html {
-  font-size: 14px;
-}
+
+html { font-size: 14px;}
+
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+  html { font-size: 16px; }
 }
 
-.border-top {
-  border-top: 1px solid #e5e5e5;
-}
-.border-bottom {
-  border-bottom: 1px solid #e5e5e5;
-}
+.border-top { border-top: 1px solid #e5e5e5; }
 
-.box-shadow {
-  box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
-}
+.border-bottom { border-bottom: 1px solid #e5e5e5; }
+
+.box-shadow { box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);}
 
 button.accept-policy {
-  font-size: 1rem;
-  line-height: inherit;
+    font-size: 1rem;
+    line-height: inherit;
 }
 
-/* Sticky footer styles
--------------------------------------------------- */
 html {
-  position: relative;
-  min-height: 100%;
+    position: relative;
+    min-height: 100%;
 }
 
-body {
-  /* Margin bottom by footer height */
-  margin-bottom: 60px;
-}
+body { margin-bottom: 60px; }
+
 .footer {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  white-space: nowrap;
-  line-height: 60px; /* Vertically center the text there */
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    white-space: nowrap;
+    line-height: 60px;
 }
+
+.body-bg-image {
+    margin: 0 auto;
+    background-image: url('../assets/image13.png');
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+    background-color: #464646;
+}
+
+.vh-70 { height: 70vh; }
+
+nav li {
+    text-align: center;
+    text-transform: uppercase;
+}
+
+ul a:hover { color: #000000 !important; }
+
+li > a:after {
+    content: '';
+    display: block;
+    height: 2px;
+    background: #000000;
+    transform: scaleX(0);
+    transition: transform .3s;
+}
+
+li > a:hover:after {
+    transform: scaleX(1);
+    transition: transform .3s;
+}
+
+.btn-square {
+    border-radius: 0;
+    width: 184px;
+    height: 46px;
+    color: #fff;
+    font-size: 1rem;
+    /*    background-color: #0275D8;
+    border-color: #0275D8;*/
+    background-color: #1b6ec2;
+    border-color: #1861ac;
+    font-family: Roboto, Verdana, sans-serif;
+    font-style: normal;
+    font-weight: bold;
+    line-height: 16px;
+}
+
+.main-title {
+    font-family: Roboto, Verdana, sans-serif;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 64px;
+    line-height: 75px;
+    letter-spacing: 4.5px;
+    text-transform: uppercase;
+    color: #373A3C;
+} 

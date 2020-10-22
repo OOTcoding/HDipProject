@@ -2,6 +2,7 @@
 
 namespace PM.MVC.Models.Exceptions
 {
+    //Catch the exception in service layer and rewrap it into a custom exception
     [Serializable]
     public class RequestedResourceHasConflictException : Exception
     {
