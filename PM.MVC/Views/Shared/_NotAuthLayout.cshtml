@@ -1,0 +1,43 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>@ViewData["Title"] - Project Management</title>
+  <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
+        rel="stylesheet">
+  <link href="~/css/site.css" rel="stylesheet"/>
+</head>
+
+<body class="body-bg-image">
+<header>
+  <nav class="justify-content-end navbar navbar-expand-lg navbar-light">
+    <button aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler"
+            data-target="#navbarNavDropdown" data-toggle="collapse" type="button">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse flex-grow-0 navbar-collapse" id="navbarNavDropdown">
+      <ul class="navbar-nav text-right ul-li-anim">
+        <li class="mx-2 nav-item">
+          <a asp-area="Identity" asp-page="/Account/Register" class="nav-link">Register</a>
+        </li>
+        <li class="mx-2 nav-item">
+          <a asp-area="Identity" asp-page="/Account/Login" class="nav-link">Login</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+</header>
+
+<main class="container">
+  @RenderBody()
+</main>
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="~/js/site.js" asp-append-version="true"></script>
+@await RenderSectionAsync("Scripts", required: false)
+
+</body>
+</html>

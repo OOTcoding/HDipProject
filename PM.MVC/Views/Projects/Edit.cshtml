@@ -1,4 +1,4 @@
-﻿@model Project
+﻿@model PM.MVC.ViewModels.EditProjectViewModel
 
 @{
     ViewData["Title"] = "Edit";
@@ -11,25 +11,53 @@
     </div>
     <div class="card-body">
 
-      <form asp-action="Edit" method="post" role="form">
+        <form asp-action="Edit" method="post" role="form">
 
-        <div class="form-group row">
-          <label asp-for="Name" class="col-form-label col-lg-3 form-control-label"></label>
-          <div class="col-lg-9">
-              <input asp-for="Id" type="hidden" />
-              <input asp-for="Name" class="form-control" />
-              <span asp-validation-for="Name" class="text-danger"></span>
-          </div>
-        </div>
-        <div class="form-group justify-content-center row">
-            <div class="col-lg-6">
-                <a asp-action="Index" class="btn btn-secondary">Back</a>
-                <input class="btn btn-primary" type="submit" value="Save Changes">
+            <div class="justify-content-center row">
+                <div asp-validation-summary="All" class="text-danger col-lg-6"></div>
             </div>
-        </div>
-      </form>
+
+            <input asp-for="Id" type="hidden" />
+
+            <div class="form-group row">
+                <label asp-for="Name" class="col-form-label col-lg-4 form-control-label"></label>
+                <div class="col-lg-8">
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label asp-for="FromDuration" class="col-form-label col-lg-4 form-control-label"></label>
+                <div class="col-lg-8">
+                    <input asp-for="FromDuration" class="form-control" type="date" asp-format="{0:yyyy-MM-dd}" />
+                    <span asp-validation-for="FromDuration" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label asp-for="ToDuration" class="col-form-label col-lg-4 form-control-label"></label>
+                <div class="col-lg-8">
+                    <input asp-for="ToDuration" class="form-control" type="date" asp-format="{0:yyyy-MM-dd}" />
+                    <span asp-validation-for="ToDuration" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label asp-for="ManagerId" class="col-form-label col-lg-4 form-control-label"></label>
+                <div class="col-lg-8">
+                    @Html.DropDownListFor(x => x.ManagerId, Model.Users.Select(e => new SelectListItem(e.UserName, e.Id)), "Please select new manager", new { @class = "form-control" })
+                </div>
+            </div>
+
+            <div class="form-group justify-content-center row">
+                <div class="col-lg-6">
+                    <a asp-action="Index" class="btn btn-secondary">Back</a>
+                    <input class="btn btn-primary" type="submit" value="Save Changes">
+                </div>
+            </div>
+        </form>
 
     </div>
   </div>
-
 </div>

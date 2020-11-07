@@ -1,21 +1,26 @@
 ﻿using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using PM.MVC.Models;
 using PM.MVC.Models.EF;
 using PM.MVC.Models.Services.Interfaces;
-using PM.MVC.Models.ViewModels;
+using PM.MVC.ViewModels;
 
 namespace PM.MVC.Controllers
 {
+    [Authorize]
     public class ProjectsController : Controller
     {
         private readonly IProjectRepository _projectRepository;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public ProjectsController(IProjectRepository projectRepository)
+        public ProjectsController(IProjectRepository projectRepository, UserManager<IdentityUser> userManager)
         {
             _projectRepository = projectRepository;
+            _userManager = userManager;
         }
 
         // GET: Projects
@@ -53,20 +58,39 @@ namespace PM.MVC.Controllers
         // GET: Projects/Edit/5
         public async Task<IActionResult> Edit(int id)
         {
-            var project = await _projectRepository.GetOneAsync(id);
-            return View(project);
+            Project project = await _projectRepository.GetOneAsync(id);
+
+            var model = new EditProjectViewModel
+            {
+                Id = project.Id, Name = project.Name, FromDuration = project.FromDuration, ToDuration = project.ToDuration, ManagerId = project.ManagerId
+            };
+
+            foreach (IdentityUser user in _userManager.Users)
+            {
+                if (await _userManager.IsInRoleAsync(user, "Administrators") && user.Id != project.ManagerId)
+                {
+                    model.Users.Add(user);
+                }
+            }
+
+            return View(model);
         }
 
         // POST: Projects/Edit/5
         [HttpPost]
-        public async Task<IActionResult> Edit(Project project)
+        public async Task<IActionResult> Edit(EditProjectViewModel model)
         {
             if (!ModelState.IsValid)
             {
-                return View(project);
+                return View(model);
             }
 
-            await _projectRepository.UpdateAsync(project);
+            Project updateProject = new Project
+            {
+                Id = model.Id, Name = model.Name, FromDuration = model.FromDuration, ToDuration = model.ToDuration, ManagerId = model.ManagerId
+            };
+
+            await _projectRepository.UpdateAsync(updateProject);
             return RedirectToAction("Index");
         }
 

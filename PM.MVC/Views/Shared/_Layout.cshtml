@@ -1,4 +1,9 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Identity
+
+@inject SignInManager<IdentityUser> SignInManager
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -19,13 +24,16 @@
                 </button>
                 <div class="collapse d-sm-inline-flex flex-sm-row-reverse navbar-collapse">
                     <partial name="_LoginPartial" />
-                    <ul class="flex-grow-1 navbar-nav">
+                    <ul class="flex-grow-1 navbar-nav ul-li-anim">
                         <li active-when="/Home/Index" class="nav-item">
-                            <a asp-action="Index" asp-area="" asp-controller="Home" class="nav-link">Home</a>
+                            <a asp-action="Summary" asp-area="" asp-controller="Home" class="nav-link">Home</a>
                         </li>
-                        <li active-when="/Projects/Index" class="nav-item">
-                            <a asp-action="Index" asp-area="" asp-controller="Projects" class="nav-link">Projects</a>
-                        </li>
+
+                        @if (SignInManager.IsSignedIn(User) && User.IsInRole("Administrators"))
+                        {
+                            <li active-when="/Projects/Index" class="nav-item">
+                                <a asp-action="Index" asp-area="" asp-controller="Projects" class="nav-link">Projects</a>
+                            </li>
                         <li active-when="/Qualifications/Index" class="nav-item">
                             <a asp-action="Index" asp-area="" asp-controller="Qualifications" class="nav-link">Qualifications</a>
                         </li>
@@ -35,6 +43,12 @@
                         <li active-when="/Skills/Index" class="nav-item">
                             <a asp-action="Index" asp-area="" asp-controller="Skills" class="nav-link">Skills</a>
                         </li>
+
+                        <li class="nav-item">
+                            @await Component.InvokeAsync("AdminMenu")
+                        </li>
+                        }
+
                     </ul>
                 </div>
             </div>

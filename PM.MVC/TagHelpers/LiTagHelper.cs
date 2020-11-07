@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 
-namespace PM.MVC.Models
+namespace PM.MVC.TagHelpers
 {
     [HtmlTargetElement("li", Attributes = "active-when")]
     public class LiTagHelper : TagHelper

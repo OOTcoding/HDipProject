@@ -1,0 +1,13 @@
+﻿@model IEnumerable<PM.MVC.Components.AdminMenuItem>
+
+<div class="dropdown">
+  <a aria-expanded="false" aria-haspopup="true" class="btn btn-link dropdown-toggle nav-link" data-toggle="dropdown" href="#" id="dropdownMenuLink" role="button">
+    Admin
+  </a>
+  <div aria-labelledby="dropdownMenuLink" class="dropdown-menu">
+    @foreach (var menuItem in Model)
+    {
+      <a class="dropdown-item" asp-controller="Admin" asp-action="@menuItem.ActionValue">@menuItem.DisplayName</a>
+    }
+  </div>
+</div>

@@ -1,0 +1,48 @@
+﻿@model PM.MVC.ViewModels.EditRoleViewModel
+
+<div class="d-flex justify-content-center m-5">
+  <div class="card card-outline-secondary w-50">
+    <div class="card-header">
+      <h3 class="display-4 mb-1">Edit role</h3>
+    </div>
+    <div class="card-body">
+
+      <form asp-action="EditRole" method="post" role="form">
+
+        <div class="justify-content-center row">
+          <div asp-validation-summary="All" class="col-lg-6 text-danger"></div>
+        </div>
+
+        <div class="form-group row">
+          <label asp-for="RoleName" class="col-form-label col-lg-3 form-control-label"></label>
+          <div class="col-lg-9">
+            <input asp-for="Id" type="hidden"/>
+            <input asp-for="RoleName" class="form-control"/>
+            <span asp-validation-for="RoleName" class="text-danger"></span>
+          </div>
+        </div>
+
+        <div class="form-group justify-content-center row">
+          <div class="col-lg-6">
+            <a asp-action="RoleManagement" class="btn btn-secondary">Back</a>
+            <input class="btn btn-primary" type="submit" value="Save Changes">
+          </div>
+        </div>
+      </form>
+
+      <h3>Users in this role</h3>
+      <ul>
+        @foreach (string user in Model.Users)
+        {
+          <li>
+            @user
+          </li>
+        }
+      </ul>
+
+      <a asp-action="AddUserToRole" asp-route-roleId="@Model.Id" class="btn btn-primary">Add users to role</a>
+      <a asp-action="DeleteUserFromRole" asp-route-roleId="@Model.Id" class="btn btn-primary">Remove users from role</a>
+
+    </div>
+  </div>
+</div>

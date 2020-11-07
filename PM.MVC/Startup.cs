@@ -29,7 +29,23 @@ namespace PM.MVC
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<PMAppDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-            services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<PMAppDbContext>();
+            services.AddIdentity<IdentityUser, IdentityRole>(options =>
+            {
+                options.Password.RequireNonAlphanumeric = true;
+                options.Password.RequireUppercase = true;
+                options.User.RequireUniqueEmail = true;
+            })
+            .AddDefaultUI()
+            .AddEntityFrameworkStores<PMAppDbContext>()
+            .AddDefaultTokenProviders();
+
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.LoginPath = "/Identity/Account/Login";
+                options.LogoutPath = "/Identity/Account/Logout";
+                options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+            });
+
             services.AddScoped<IProjectRepository, ProjectRepository>();
             services.AddScoped<IRepository<Qualification>, QualificationRepository>();
             services.AddScoped<IQualificationRepository<Resource>, ResourceRepository>();

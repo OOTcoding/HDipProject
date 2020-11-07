@@ -1,16 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using PM.MVC.Models.EF;
 using PM.MVC.Models.Exceptions;
 using PM.MVC.Models.Services.Interfaces;
-
+//using repository pattern to decouple architecture from framework to allow loose coupling (Clean Architecture "Uncle Bob”)
 namespace PM.MVC.Models.Services
 {
-    //using repository pattern to decouple architecture from framework to allow loose coupling (Clean Architecture "Uncle Bob”)
     public class ProjectRepository : IDisposable, IProjectRepository
     {
         private readonly PMAppDbContext _context;
@@ -28,7 +26,7 @@ namespace PM.MVC.Models.Services
 
         public async Task<IEnumerable<Project>> GetAllAsync()
         {
-            var projects = await _context.Projects.Include(x => x.ProjectQualifications).Include(x => x.ProjectResources).ToArrayAsync();
+            var projects = await _context.Projects.Include(x => x.Manager).Include(x => x.ProjectQualifications).Include(x => x.ProjectResources).ToArrayAsync();
             await _context.Skills.LoadAsync();
             return projects;
         }
@@ -59,8 +57,7 @@ namespace PM.MVC.Models.Services
 
             var qualifications = await _context.Qualifications.ToArrayAsync(); // get all qualifications 
                                                                                // compare project qualif with list of all qualif and return mathcing qualifications
-            return qualifications.Where(qualification => dbProject
-                                                                  .ProjectQualifications.All(p => p.QualificationId != qualification.Id));
+            return qualifications.Where(qualification => dbProject.ProjectQualifications.All(p => p.QualificationId != qualification.Id));
         }
 
         public async Task<Project> AddAsync(Project createRequest)
@@ -97,6 +94,9 @@ namespace PM.MVC.Models.Services
             var dbProject = dbProjects[0];
 
             dbProject.Name = updateRequest.Name;
+            dbProject.FromDuration = updateRequest.FromDuration;
+            dbProject.ToDuration = updateRequest.ToDuration;
+            dbProject.ManagerId = updateRequest.ManagerId ?? dbProject.ManagerId;
 
             await _context.SaveChangesAsync();
 
@@ -208,7 +208,8 @@ namespace PM.MVC.Models.Services
 
         private async Task<Project> GetDbProject(int id)
         {
-            Project dbProject = await _context.Projects.Include(x => x.ProjectQualifications)
+            Project dbProject = await _context.Projects.Include(x => x.Manager)
+                                  .Include(x => x.ProjectQualifications)
                                   .ThenInclude(x => x.Qualification)
                                   .Include(x => x.ProjectResources)
                                   .ThenInclude(x => x.Resource)

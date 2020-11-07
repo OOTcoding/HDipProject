@@ -1,0 +1,32 @@
+﻿@model PM.MVC.ViewModels.UserRoleViewModel
+
+<div class="d-flex justify-content-center m-5">
+  <div class="card card-outline-secondary w-50">
+    <div class="card-header">
+      <h3 class="display-4 mb-1">Delete user from role</h3>
+    </div>
+    <div class="card-body">
+
+      <form asp-action="DeleteUserFromRole" method="post" role="form">
+        <input asp-for="UserId" type="hidden" />
+        <div class="form-group row">
+          <div class="col-lg-9">
+            <select asp-for="UserId" asp-items="@(new SelectList(Model.Users, "Id", "UserName"))" class="form-control">
+              <option>Please select a user</option>
+            </select>
+          </div>
+          <input class="btn btn-primary" type="submit" value="Remove from role" />
+
+        </div>
+
+        <div class="justify-content-center row">
+          <div class="row">
+            <a asp-action="RoleManagement" class="btn btn-secondary mx-1">Back</a>
+            <input class="btn btn-success mx-1" type="submit" value="Done">
+          </div>
+        </div>
+      </form>
+
+    </div>
+  </div>
+</div>

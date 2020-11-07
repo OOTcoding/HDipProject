@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PM.MVC.Models.EF;
 using PM.MVC.Models.Services.Interfaces;
 
 namespace PM.MVC.Controllers
 {
+    [Authorize]
     public class SkillsController : Controller
     {
         private readonly IRepository<Skill> _repository;

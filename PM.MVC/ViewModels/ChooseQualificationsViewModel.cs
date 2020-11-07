@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using PM.MVC.Models.EF;
 
-namespace PM.MVC.Models.ViewModels
+namespace PM.MVC.ViewModels
 {
     public class ChooseQualificationsViewModel
     {

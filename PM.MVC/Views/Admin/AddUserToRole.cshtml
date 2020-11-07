@@ -1,0 +1,28 @@
+﻿@model PM.MVC.ViewModels.UserRoleViewModel
+
+<div class="d-flex justify-content-center m-5">
+  <div class="card card-outline-secondary w-50">
+    <div class="card-header">
+      <h3 class="display-4 mb-1">Add user to role</h3>
+    </div>
+    <div class="card-body">
+
+      <form asp-action="AddUserToRole" method="post" role="form">
+        <input asp-for="RoleId" type="hidden"/>
+        <div class="form-group row">
+          <div class="col-lg-9">
+            @Html.DropDownListFor(x => x.UserId, Model.Users.Select(e => new SelectListItem(e.UserName, e.Id)), "Please select a user", new { @class = "form-control" })
+          </div>
+          <input class="btn btn-primary" type="submit" value="Add to role"/>
+        </div>
+
+        <div class="justify-content-center row">
+          <div class="row">
+            <a asp-action="RoleManagement" class="btn btn-success mx-1">Done</a>
+          </div>
+        </div>
+      </form>
+
+    </div>
+  </div>
+</div>

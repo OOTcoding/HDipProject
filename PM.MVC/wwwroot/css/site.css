@@ -4,9 +4,11 @@
     word-break: break-all;
 }
 
-/* Provide sufficient contrast against white background */
-
 a {  color: #0366d6;}
+
+.btn {
+    border: 0;
+}
 
 .btn-primary {
   color: #fff;
@@ -19,9 +21,6 @@ a {  color: #0366d6;}
   background-color: #1b6ec2;
   border-color: #1861ac;
 }
-
-/* Sticky footer styles
--------------------------------------------------- */
 
 html { font-size: 14px;}
 
@@ -67,14 +66,16 @@ body { margin-bottom: 60px; }
 
 .vh-70 { height: 70vh; }
 
-nav li {
+.ul-li-anim li {
     text-align: center;
     text-transform: uppercase;
 }
 
-ul a:hover { color: #000000 !important; }
+.ul-li-anim a:hover {
+    color: #000000 !important;
+}
 
-li > a:after {
+.ul-li-anim li > a:after {
     content: '';
     display: block;
     height: 2px;
@@ -83,7 +84,7 @@ li > a:after {
     transition: transform .3s;
 }
 
-li > a:hover:after {
+.ul-li-anim li > a:hover:after {
     transform: scaleX(1);
     transition: transform .3s;
 }
@@ -94,8 +95,6 @@ li > a:hover:after {
     height: 46px;
     color: #fff;
     font-size: 1rem;
-    /*    background-color: #0275D8;
-    border-color: #0275D8;*/
     background-color: #1b6ec2;
     border-color: #1861ac;
     font-family: Roboto, Verdana, sans-serif;

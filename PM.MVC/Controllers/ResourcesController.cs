@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 using PM.MVC.Models.EF;
@@ -10,6 +11,7 @@ using PM.MVC.Models.Services.Interfaces;
 
 namespace PM.MVC.Controllers
 {
+    [Authorize]
     public class ResourcesController : Controller
     {
         private readonly IQualificationRepository<Resource> _repository;
