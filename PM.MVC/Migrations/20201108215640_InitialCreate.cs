@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace PM.MVC.Migrations
 {
-    public partial class AddIdentity : Migration
+    public partial class InitialCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -44,6 +44,19 @@ namespace PM.MVC.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Skills",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Skills", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -92,8 +105,8 @@ namespace PM.MVC.Migrations
                 name: "AspNetUserLogins",
                 columns: table => new
                 {
-                    LoginProvider = table.Column<string>(maxLength: 128, nullable: false),
-                    ProviderKey = table.Column<string>(maxLength: 128, nullable: false),
+                    LoginProvider = table.Column<string>(nullable: false),
+                    ProviderKey = table.Column<string>(nullable: false),
                     ProviderDisplayName = table.Column<string>(nullable: true),
                     UserId = table.Column<string>(nullable: false)
                 },
@@ -137,8 +150,8 @@ namespace PM.MVC.Migrations
                 columns: table => new
                 {
                     UserId = table.Column<string>(nullable: false),
-                    LoginProvider = table.Column<string>(maxLength: 128, nullable: false),
-                    Name = table.Column<string>(maxLength: 128, nullable: false),
+                    LoginProvider = table.Column<string>(nullable: false),
+                    Name = table.Column<string>(nullable: false),
                     Value = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
@@ -148,6 +161,120 @@ namespace PM.MVC.Migrations
                         name: "FK_AspNetUserTokens_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Projects",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(maxLength: 50, nullable: false),
+                    ManagerId = table.Column<string>(nullable: true),
+                    FromDuration = table.Column<DateTime>(nullable: false),
+                    ToDuration = table.Column<DateTime>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Projects", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Projects_AspNetUsers_ManagerId",
+                        column: x => x.ManagerId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Qualifications",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    SkillId = table.Column<int>(nullable: false),
+                    Level = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Qualifications", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Qualifications_Skills_SkillId",
+                        column: x => x.SkillId,
+                        principalTable: "Skills",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ProjectIdentityResources",
+                columns: table => new
+                {
+                    ProjectId = table.Column<int>(nullable: false),
+                    IdentityResourceId = table.Column<string>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProjectIdentityResources", x => new { x.ProjectId, x.IdentityResourceId });
+                    table.ForeignKey(
+                        name: "FK_ProjectIdentityResources_AspNetUsers_IdentityResourceId",
+                        column: x => x.IdentityResourceId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ProjectIdentityResources_Projects_ProjectId",
+                        column: x => x.ProjectId,
+                        principalTable: "Projects",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ProjectQualifications",
+                columns: table => new
+                {
+                    ProjectId = table.Column<int>(nullable: false),
+                    QualificationId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProjectQualifications", x => new { x.ProjectId, x.QualificationId });
+                    table.ForeignKey(
+                        name: "FK_ProjectQualifications_Projects_ProjectId",
+                        column: x => x.ProjectId,
+                        principalTable: "Projects",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ProjectQualifications_Qualifications_QualificationId",
+                        column: x => x.QualificationId,
+                        principalTable: "Qualifications",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "QualificationIdentityResources",
+                columns: table => new
+                {
+                    QualificationId = table.Column<int>(nullable: false),
+                    IdentityResourceId = table.Column<string>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_QualificationIdentityResources", x => new { x.QualificationId, x.IdentityResourceId });
+                    table.ForeignKey(
+                        name: "FK_QualificationIdentityResources_AspNetUsers_IdentityResourceId",
+                        column: x => x.IdentityResourceId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_QualificationIdentityResources_Qualifications_QualificationId",
+                        column: x => x.QualificationId,
+                        principalTable: "Qualifications",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -190,6 +317,31 @@ namespace PM.MVC.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProjectIdentityResources_IdentityResourceId",
+                table: "ProjectIdentityResources",
+                column: "IdentityResourceId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProjectQualifications_QualificationId",
+                table: "ProjectQualifications",
+                column: "QualificationId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Projects_ManagerId",
+                table: "Projects",
+                column: "ManagerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_QualificationIdentityResources_IdentityResourceId",
+                table: "QualificationIdentityResources",
+                column: "IdentityResourceId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Qualifications_SkillId",
+                table: "Qualifications",
+                column: "SkillId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -210,10 +362,28 @@ namespace PM.MVC.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "ProjectIdentityResources");
+
+            migrationBuilder.DropTable(
+                name: "ProjectQualifications");
+
+            migrationBuilder.DropTable(
+                name: "QualificationIdentityResources");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
+                name: "Projects");
+
+            migrationBuilder.DropTable(
+                name: "Qualifications");
+
+            migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "Skills");
         }
     }
 }

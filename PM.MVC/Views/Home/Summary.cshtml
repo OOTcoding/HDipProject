@@ -1,1 +1,121 @@
-﻿<p>Summary page</p>
+﻿@model PM.MVC.ViewModels.ChartDataViewModel
+
+<div class="no-gutters row vertical-center">
+    <div class="col-6 col-md-4">
+
+        <form asp-action="SummaryChartData" method="post">
+
+            <button class="btn btn-widget text-dark yellow" name="ButtonType" type="submit" value="Project">
+
+                <input asp-for="ProjectsCount" type="hidden" />
+
+                <div class="row">
+                    <div class="align-middle col">
+                        <p class="inline-cetner m-0">@Model.ProjectsCount</p>
+                    </div>
+                    <div class="col">
+                        <h1 class="inline-cetner m-0">
+                            <i class="fa-briefcase fas"></i>
+                        </h1>
+                    </div>
+                </div>
+            </button>
+
+            <button class="btn btn-widget my-4 red text-dark" name="ButtonType" type="submit" value="Resource">
+
+                <input asp-for="ResourcesCount" type="hidden" />
+
+                <div class="row">
+                    <div class="align-middle col">
+                        <p class="inline-cetner m-0">@Model.ResourcesCount</p>
+                    </div>
+                    <div class="col">
+                        <h1 class="inline-cetner m-0">
+                            <i class="fas fa-user"></i>
+                        </h1>
+                    </div>
+                </div>
+            </button>
+
+            <button class="btn btn-widget green text-dark" name="ButtonType" type="submit" value="Qualification">
+
+                <input asp-for="QualificationsCount" type="hidden" />
+
+                <div class="row">
+                    <div class="align-middle col">
+                        <p class="inline-cetner m-0">@Model.QualificationsCount</p>
+                    </div>
+                    <div class="col">
+                        <h1 class="inline-cetner m-0">
+                            <i class="fa-money-check fas"></i>
+                        </h1>
+                    </div>
+                </div>
+            </button>
+
+            <button class="blue btn btn-widget mt-4 text-dark" name="ButtonType" type="submit" value="Skill">
+
+                <input asp-for="SkillsCount" type="hidden" />
+
+                <div class="row">
+                    <div class="align-middle col">
+                        <p class="inline-cetner m-0">@Model.SkillsCount</p>
+                    </div>
+                    <div class="col">
+                        <h1 class="inline-cetner m-0">
+                            <i class="fa-graduation-cap fas"></i>
+                        </h1>
+                    </div>
+                </div>
+            </button>
+
+        </form>
+
+    </div>
+
+    <div class="col-md-7 offset-md-1">
+        <div id="container" style="width: 600px; height: 600px;"></div>
+    </div>
+</div>
+
+
+<script>
+  anychart.onDocumentLoad(function() {
+
+    // create and configure a label
+    const label = anychart.standalones.label();
+    label.text("@Model.Label");
+    label.width("100%");
+    label.height("100%");
+    label.fontColor("#60727b");
+    label.hAlign("center");
+    label.vAlign("middle");
+
+    // create data
+    const data = [
+
+      @{
+        foreach (KeyValuePair<string, int> pair in Model.ChartData)
+        {
+          <text>{ x: "@pair.Key", value: @pair.Value },</text>
+        }
+      }
+
+    ];
+
+// create a pie chart and set the data
+    const chart = anychart.pie(data);
+
+// set the inner radius (to turn the pie chart into a doughnut chart)
+    chart.innerRadius("40%");
+
+// set the container id
+    chart.container("container");
+
+    // set the label as the center content
+    chart.center().content(label);
+
+// initiate drawing the chart
+    chart.draw();
+  });
+</script>

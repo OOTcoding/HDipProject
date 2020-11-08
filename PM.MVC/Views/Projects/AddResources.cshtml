@@ -28,22 +28,22 @@
             </th>
 
             <td>
-                <input asp-for="@Model.SuitableProjectResourceList[i].Resource.Id" type="hidden"/>@Model.SuitableProjectResourceList[i].Resource.Id
+                <input asp-for="@Model.SuitableProjectResourceList[i].IdentityResource.Id" type="hidden"/>@Model.SuitableProjectResourceList[i].IdentityResource.Id
             </td>
             <td>
-                <input asp-for="@Model.SuitableProjectResourceList[i].Resource.Name" type="hidden"/>@Model.SuitableProjectResourceList[i].Resource.Name
+                <input asp-for="@Model.SuitableProjectResourceList[i].IdentityResource.Email" type="hidden"/>@Model.SuitableProjectResourceList[i].IdentityResource.Email
             </td>
 
             <td class="w-50">
 
                 <button class="btn btn-link collapsed p-0" type="button" data-toggle="collapse"
-                        data-target="#collapseOne@(Model.SuitableProjectResourceList[i].Resource.Id)"
-                        aria-expanded="false" aria-controls="collapseOne@(Model.SuitableProjectResourceList[i].Resource.Id)">
+                        data-target="#collapseOne@(Model.SuitableProjectResourceList[i].IdentityResource.Id)"
+                        aria-expanded="false" aria-controls="collapseOne@(Model.SuitableProjectResourceList[i].IdentityResource.Id)">
                     Qualifications
                 </button>
 
-                <ul id="collapseOne@(Model.SuitableProjectResourceList[i].Resource.Id)" class="collapse" aria-labelledby="headingOne@(Model.SuitableProjectResourceList[i].Resource.Id)" data-parent="#accordionExample">
-                    @foreach (string q in Model.SuitableProjectResourceList[i].Resource.QualificationResources.Select(x => x.Qualification.ToString()))
+                <ul id="collapseOne@(Model.SuitableProjectResourceList[i].IdentityResource.Id)" class="collapse" aria-labelledby="headingOne@(Model.SuitableProjectResourceList[i].IdentityResource.Id)" data-parent="#accordionExample">
+                    @foreach (string q in Model.SuitableProjectResourceList[i].IdentityResource.QualificationResources.Select(x => x.Qualification.ToString()))
                     {
         <li>@q</li>
 }

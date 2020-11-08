@@ -16,7 +16,7 @@ namespace PM.MVC.Models.EF
 
         public string ManagerId { get; set; }
 
-        public IdentityUser Manager { get; set; }
+        public IdentityResource Manager { get; set; }
 
         [Required(ErrorMessage = "Please enter the start date")]
         [DataType(DataType.Date)]
@@ -32,7 +32,7 @@ namespace PM.MVC.Models.EF
         public virtual ICollection<ProjectQualification> ProjectQualifications { get; set; }
 
         [JsonIgnore]
-        public virtual ICollection<ProjectResource> ProjectResources { get; set; }
+        public virtual ICollection<ProjectIdentityResource> ProjectResources { get; set; }
 
         public override string ToString()
         {

@@ -31,12 +31,12 @@ namespace PM.MVC.Models.Services
             return projects;
         }
 
-        public async Task<IEnumerable<Resource>> GetSuitableResourcesAsync(int projectId)
+        public async Task<IEnumerable<IdentityResource>> GetSuitableResourcesAsync(int projectId)
         {
             Project dbProject = await GetDbProject(projectId);
 
-            Resource[] resources = await _context.Resources.Include(x => x.ProjectResources)
-                                     .ThenInclude(x => x.Resource)
+            IdentityResource[] resources = await _context.IdentityResources.Include(x => x.ProjectResources)
+                                     .ThenInclude(x => x.IdentityResource)
                                      .Include(x => x.QualificationResources)
                                      .ThenInclude(x => x.Qualification)
                                      .ToArrayAsync();
@@ -69,7 +69,7 @@ namespace PM.MVC.Models.Services
                 throw new RequestedResourceHasConflictException();
             }
 
-            var dbProject = await _context.Projects.AddAsync(new Project { Name = createRequest.Name });
+            var dbProject = await _context.Projects.AddAsync(createRequest);
             await _context.SaveChangesAsync();
 
             return dbProject.Entity;
@@ -118,16 +118,16 @@ namespace PM.MVC.Models.Services
             await _context.SaveChangesAsync();
         }
 
-        public async Task<Project> AddResourcesAsync(int sourceId, IEnumerable<Resource> resourcesToAdd)
+        public async Task<Project> AddResourcesAsync(int sourceId, IEnumerable<IdentityResource> resourcesToAdd)
         {
             Project dbProject = await GetDbProject(sourceId);
 
-            Resource[] query = await _context.Resources.Include(x => x.ProjectResources).ToArrayAsync();
+            IdentityResource[] query = await _context.IdentityResources.Include(x => x.ProjectResources).ToArrayAsync();
             var resources = query.Where(x => resourcesToAdd.Any(r => r.Id == x.Id));
 
-            foreach (Resource resource in resources)
+            foreach (IdentityResource resource in resources)
             {
-                ProjectResource projectResource = new ProjectResource { Project = dbProject, ProjectId = dbProject.Id, Resource = resource, ResourceId = resource.Id };
+                ProjectIdentityResource projectResource = new ProjectIdentityResource { Project = dbProject, ProjectId = dbProject.Id, IdentityResource = resource, IdentityResourceId = resource.Id };
                 dbProject.ProjectResources.Add(projectResource);
                 resource.ProjectResources.Add(projectResource);
             }
@@ -162,10 +162,8 @@ namespace PM.MVC.Models.Services
             return dbProject;
         }
 
-        public async Task<Project> AddQualificationAsync(int id, Qualification createRequest)
+        public async Task<Project> AddQualificationAsync(Project dbProject, Qualification createRequest)
         {
-            Project dbProject = await GetDbProject(id);
-
             Qualification[] query = await _context.Qualifications.Include(x => x.ProjectQualification).ToArrayAsync();
             var qualification = query.FirstOrDefault(q => q.Id == createRequest.Id);
 
@@ -174,7 +172,7 @@ namespace PM.MVC.Models.Services
                 ProjectQualification projectQualification = new ProjectQualification
                 {
                     Project = dbProject,
-                    ProjectId = id,
+                    ProjectId = dbProject.Id,
                     Qualification = qualification,
                     QualificationId = qualification.Id
                 };
@@ -185,19 +183,19 @@ namespace PM.MVC.Models.Services
             return dbProject;
         }
 
-        public async Task DeleteQualificationAsync(int projectId, int qualificationId)
+        public async Task DeleteQualificationAsync(Project dbProject, int qualificationId)
         {
-            ProjectQualification projectQualification = await GetDbProjectQualification(projectId, qualificationId);
+            ProjectQualification projectQualification = await GetDbProjectQualification(dbProject.Id, qualificationId);
 
             _context.ProjectQualifications.Remove(projectQualification);
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteResourceAsync(int sourceId, int resourceId)
+        public async Task DeleteResourceAsync(int sourceId, string resourceId)
         {
-            ProjectResource projectResource = await GetDbProjectResource(sourceId, resourceId);
+            ProjectIdentityResource projectIdentityResource = await GetDbProjectResource(sourceId, resourceId);
 
-            _context.ProjectResources.Remove(projectResource);
+            _context.ProjectIdentityResources.Remove(projectIdentityResource);
             await _context.SaveChangesAsync();
         }
 
@@ -212,7 +210,7 @@ namespace PM.MVC.Models.Services
                                   .Include(x => x.ProjectQualifications)
                                   .ThenInclude(x => x.Qualification)
                                   .Include(x => x.ProjectResources)
-                                  .ThenInclude(x => x.Resource)
+                                  .ThenInclude(x => x.IdentityResource)
                                   .ThenInclude(x => x.QualificationResources)
                                   .ThenInclude(x => x.Qualification)
                                   .FirstOrDefaultAsync(x => x.Id == id);
@@ -241,11 +239,11 @@ namespace PM.MVC.Models.Services
             return projectQualification;
         }
 
-        private async Task<ProjectResource> GetDbProjectResource(int projectId, int resourceId)
+        private async Task<ProjectIdentityResource> GetDbProjectResource(int projectId, string resourceId)
         {
-            var projectResource = await _context.ProjectResources.Include(x => x.Project)
-                                                .Include(x => x.Resource)
-                                                .FirstOrDefaultAsync(x => x.ProjectId == projectId && x.ResourceId == resourceId);
+            var projectResource = await _context.ProjectIdentityResources.Include(x => x.Project)
+                                                .Include(x => x.IdentityResource)
+                                                .FirstOrDefaultAsync(x => x.ProjectId == projectId && x.IdentityResourceId == resourceId);
 
             if (projectResource == null)
             {

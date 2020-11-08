@@ -1,10 +1,8 @@
-﻿using System.Diagnostics;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using PM.MVC.Models;
 using PM.MVC.Models.EF;
 using PM.MVC.Models.Services.Interfaces;
 using PM.MVC.ViewModels;
@@ -15,9 +13,9 @@ namespace PM.MVC.Controllers
     public class ProjectsController : Controller
     {
         private readonly IProjectRepository _projectRepository;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<IdentityResource> _userManager;
 
-        public ProjectsController(IProjectRepository projectRepository, UserManager<IdentityUser> userManager)
+        public ProjectsController(IProjectRepository projectRepository, UserManager<IdentityResource> userManager)
         {
             _projectRepository = projectRepository;
             _userManager = userManager;
@@ -44,15 +42,26 @@ namespace PM.MVC.Controllers
 
         // POST: Projects/Create
         [HttpPost]
-        public async Task<IActionResult> Create(Project project)
+        public async Task<IActionResult> Create(EditProjectViewModel model)
         {
             if (ModelState.IsValid)
             {
-                await _projectRepository.AddAsync(project);
+                IdentityResource user = await _userManager.GetUserAsync(User);
+
+                Project addProject = new Project
+                {
+                    Name = model.Name,
+                    FromDuration = model.FromDuration,
+                    ToDuration = model.ToDuration,
+                    ManagerId = user.Id,
+                    Manager = user
+                };
+
+                await _projectRepository.AddAsync(addProject);
                 return RedirectToAction("Index");
             }
 
-            return View(project);
+            return View(model);
         }
 
         // GET: Projects/Edit/5
@@ -65,9 +74,9 @@ namespace PM.MVC.Controllers
                 Id = project.Id, Name = project.Name, FromDuration = project.FromDuration, ToDuration = project.ToDuration, ManagerId = project.ManagerId
             };
 
-            foreach (IdentityUser user in _userManager.Users)
+            foreach (IdentityResource user in _userManager.Users)
             {
-                if (await _userManager.IsInRoleAsync(user, "Administrators") && user.Id != project.ManagerId)
+                if (await _userManager.IsInRoleAsync(user, "Manager") && user.Id != project.ManagerId)
                 {
                     model.Users.Add(user);
                 }
@@ -85,10 +94,7 @@ namespace PM.MVC.Controllers
                 return View(model);
             }
 
-            Project updateProject = new Project
-            {
-                Id = model.Id, Name = model.Name, FromDuration = model.FromDuration, ToDuration = model.ToDuration, ManagerId = model.ManagerId
-            };
+            Project updateProject = new Project { Id = model.Id, Name = model.Name, FromDuration = model.FromDuration, ToDuration = model.ToDuration, ManagerId = model.ManagerId };
 
             await _projectRepository.UpdateAsync(updateProject);
             return RedirectToAction("Index");
@@ -109,19 +115,19 @@ namespace PM.MVC.Controllers
 
             return View(new SuitableProjectResourceViewModel
             {
-                SuitableProjectResourceList = resources.Select(x => new SuitableProjectResourceListItem { Resource = x, IsChecked = false }).ToList()
+                SuitableProjectResourceList = resources.Select(x => new SuitableProjectResourceListItem { IdentityResource = x, IsChecked = false }).ToList()
             });
         }
 
         [HttpPost("Projects/{id:int:min(1)}/resources")]
-        public async Task<ActionResult> AddResources(int id, SuitableProjectResourceViewModel resourcesToAdd)
+        public async Task<IActionResult> AddResources(int id, SuitableProjectResourceViewModel resourcesToAdd)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
 
-            await _projectRepository.AddResourcesAsync(id, resourcesToAdd.SuitableProjectResourceList.Where(x => x.IsChecked).Select(x => x.Resource));
+            await _projectRepository.AddResourcesAsync(id, resourcesToAdd.SuitableProjectResourceList.Where(x => x.IsChecked).Select(x => x.IdentityResource));
             return RedirectToAction("Details", new { id });
         }
 
@@ -151,12 +157,13 @@ namespace PM.MVC.Controllers
         [HttpPost("Projects/{id:int:min(1)}/qualifications/{qualificationId:int:min(1)}")]
         public async Task<IActionResult> DeleteQualification(int id, int qualificationId)
         {
-            await _projectRepository.DeleteQualificationAsync(id, qualificationId);
+            var project = await _projectRepository.GetOneAsync(id);
+            await _projectRepository.DeleteQualificationAsync(project, qualificationId);
             return RedirectToAction("Details", new { id });
         }
 
         [HttpPost("Projects/{id:int:min(1)}/resources/{resourceId:int:min(1)}")]
-        public async Task<IActionResult> DeleteResource(int id, int resourceId)
+        public async Task<IActionResult> DeleteResource(int id, string resourceId)
         {
             await _projectRepository.DeleteResourceAsync(id, resourceId);
             return RedirectToAction("Details", new { id });

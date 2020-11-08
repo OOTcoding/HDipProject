@@ -10,7 +10,7 @@ namespace PM.MVC.ViewModels
 
     public class SuitableProjectResourceListItem
     {
-        public Resource Resource { get; set; }
+        public IdentityResource IdentityResource { get; set; }
 
         public bool IsChecked { get; set; }
     }

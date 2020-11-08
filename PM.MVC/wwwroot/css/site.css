@@ -6,9 +6,7 @@
 
 a {  color: #0366d6;}
 
-.btn {
-    border: 0;
-}
+.btn { border: 0; }
 
 .btn-primary {
   color: #fff;
@@ -71,9 +69,7 @@ body { margin-bottom: 60px; }
     text-transform: uppercase;
 }
 
-.ul-li-anim a:hover {
-    color: #000000 !important;
-}
+.ul-li-anim a:hover { color: #000000 !important; }
 
 .ul-li-anim li > a:after {
     content: '';
@@ -112,4 +108,94 @@ body { margin-bottom: 60px; }
     letter-spacing: 4.5px;
     text-transform: uppercase;
     color: #373A3C;
-} 
+}
+header { height: 60px; }
+
+.btn-widget {
+    width: 240px;
+    height: 90px;
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: 300;
+    font-size: 24px;
+    line-height: 28px;
+}
+
+.yellow {
+    background: #E2C57B;
+    background-color: #E2C57B;
+    border-color: #E2C57B;
+    border-radius: 6px;
+}
+
+.red {
+    background: #DC7575;
+    background-color: #DC7575;
+    border-color: #DC7575;
+    border-radius: 6px;
+}
+
+.green {
+    background: #5FD3B1;
+    background-color: #5FD3B1;
+    border-color: #5FD3B1;
+    border-radius: 6px;
+}
+
+.blue {
+    background: #4094E2;
+    background-color: #4094E2;
+    border-color: #4094E2;
+    border-radius: 6px;
+}
+
+.yellow:hover,
+.yellow:focus,
+.yellow:active,
+.open > .dropdown-toggle.yellow {
+    color: #fff;
+    background-color: #c7ad6c;
+    border-color: #c7ad6c;
+}
+
+.red:hover,
+.red:focus,
+.red:active,
+.open > .dropdown-toggle.red {
+    color: #fff;
+    background-color: #be6464;
+    border-color: #be6464;
+}
+
+.green:hover,
+.green:focus,
+.green:active,
+.open > .dropdown-toggle.green {
+    color: #fff;
+    background-color: #4fb395;
+    border-color: #4fb395;
+}
+
+.blue:hover,
+.blue:focus,
+.blue:active,
+.open > .dropdown-toggle.blue {
+    color: #fff;
+    background-color: #3b7cb8;
+    border-color: #3b7cb8;
+}
+
+.vertical-center {
+    min-height: calc(100vh - 1rem - 60px - 60px);
+    display: flex;
+    align-items: center;
+}
+
+.inline-cetner {
+    text-align: center;
+    line-height: 50px;
+}
+
+.anychart-credits {
+    display: none
+}

@@ -1,43 +1,40 @@
-﻿@using Microsoft.AspNetCore.Identity.EntityFrameworkCore
-@using Microsoft.AspNetCore.Identity
-@model IEnumerable<Microsoft.AspNetCore.Identity.IdentityUser>
+﻿@using Microsoft.AspNetCore.Identity
+@model IEnumerable<IdentityResource>
 
 <h2>User management</h2>
 
 @if (!Model.Any())
 {
-  <tr><td colspan="3" class="text-center">No user accounts</td></tr>
-}
+<tr><td colspan="3" class="text-center">No user accounts</td></tr> }
 else
 {
-  <table class="table table-borderless table-hover">
+<table class="table table-borderless table-hover">
     <thead>
-    <tr>
-      <th scope="col">User ID</th>
-      <th scope="col">User Name</th>
-      <th scope="col">Email</th>
-      <th scope="col">Actions</th>
-    </tr>
+        <tr>
+            <th scope="col">User ID</th>
+            <th scope="col">User Name</th>
+            <th scope="col">Email</th>
+            <th scope="col">Actions</th>
+        </tr>
     </thead>
     <tbody>
-      @foreach (IdentityUser user in Model)
-      {
-        <tr>
-          <th scope="row">@user.Id</th>
-          <td>@user.UserName</td>
-          <td>@user.Email</td>
-          <td>
-            <form asp-action="DeleteUser" asp-route-userId="@user.Id" method="post">
-              <a class="btn btn-sm btn-primary" asp-action="EditUser" asp-route-userId="@user.Id">Edit</a>
-              <button type="submit" onclick="return confirm('Do you really want to delete this user?');" class="btn btn-sm btn-danger">Delete</button>
-            </form>
-          </td>
-        </tr>
-      }
-    </tbody>
-  </table>
+        @foreach (var user in Model)
+        {
+<tr>
+    <th scope="row">@user.Id</th>
+    <td>@user.UserName</td>
+    <td>@user.Email</td>
+    <td>
+        <form asp-action="DeleteUser" asp-route-userId="@user.Id" method="post">
+            <a class="btn btn-sm btn-primary" asp-action="EditUser" asp-route-userId="@user.Id">Edit</a>
+            <button type="submit" onclick="return confirm('Do you really want to delete this user?');" class="btn btn-sm btn-danger">Delete</button>
+        </form>
+    </td>
+</tr>
 }
+    </tbody>
+</table>}
 
 <p>
-  <a class="btn btn-primary" asp-action="AddUser">Add new user</a>
+    <a class="btn btn-primary" asp-action="AddUser">Add new user</a>
 </p>

@@ -19,7 +19,7 @@ namespace PM.MVC.Models.EF
         public virtual ICollection<ProjectQualification> ProjectQualification { get; set; }
 
         [JsonIgnore]
-        public virtual ICollection<QualificationResource> QualificationResources { get; set; }
+        public virtual ICollection<QualificationIdentityResource> QualificationResources { get; set; }
 
         public override string ToString()
         {

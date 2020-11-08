@@ -7,16 +7,20 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using PM.MVC.Models;
+using PM.MVC.Models.EF;
+using PM.MVC.Models.Services;
+using PM.MVC.ViewModels;
 
 namespace PM.MVC.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly SignInManager<IdentityUser> _signInManager;
-
-        public HomeController(SignInManager<IdentityUser> signInManager)
+        private readonly SignInManager<IdentityResource> _signInManager;
+        private readonly SummaryService _summaryService;
+        public HomeController(SignInManager<IdentityResource> signInManager, SummaryService summaryService)
         {
             _signInManager = signInManager;
+            _summaryService = summaryService;
         }
 
         [AllowAnonymous]
@@ -31,9 +35,36 @@ namespace PM.MVC.Controllers
         }
 
         [Authorize]
-        public IActionResult Summary()
+        public async Task<IActionResult> Summary()
         {
-            return View();
+            return View(await _summaryService.GetProjectsPerManagerChartViewModelAsync());
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> SummaryChartData(ChartDataViewModel viewModel)
+        {
+            if (viewModel.ButtonType == ButtonType.Project)
+            {
+                await _summaryService.GetProjectsPerManagerAsync(viewModel);
+            }
+
+            if (viewModel.ButtonType == ButtonType.Qualification)
+            {
+                await _summaryService.GetQualificationsByProjectAsync(viewModel);
+            }
+
+            if (viewModel.ButtonType == ButtonType.Resource)
+            {
+                await _summaryService.GetResourcesByProjectAsync(viewModel);
+            }
+
+            if (viewModel.ButtonType == ButtonType.Skill)
+            {
+                await _summaryService.GetSkillsByLevelAsync(viewModel);
+            }
+
+            return View("Summary", viewModel);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

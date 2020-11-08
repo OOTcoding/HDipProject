@@ -1,7 +1,6 @@
-﻿@using Microsoft.AspNetCore.Authorization
-@using Microsoft.AspNetCore.Identity
+﻿@using Microsoft.AspNetCore.Identity
 
-@inject SignInManager<IdentityUser> SignInManager
+@inject SignInManager<IdentityResource> SignInManager
 
 <!DOCTYPE html>
 <html lang="en">
@@ -12,7 +11,11 @@
     <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
           rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link href="~/css/site.css" rel="stylesheet" />
+    <script src="https://kit.fontawesome.com/e10f38e7b7.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.anychart.com/releases/8.9.0/js/anychart-core.min.js"></script>
+    <script src="https://cdn.anychart.com/releases/8.9.0/js/anychart-pie.min.js"></script>
 </head>
 <body>
     <header>
@@ -29,24 +32,21 @@
                             <a asp-action="Summary" asp-area="" asp-controller="Home" class="nav-link">Home</a>
                         </li>
 
-                        @if (SignInManager.IsSignedIn(User) && User.IsInRole("Administrators"))
+                        @if (SignInManager.IsSignedIn(User) && User.IsInRole("Manager"))
                         {
                             <li active-when="/Projects/Index" class="nav-item">
                                 <a asp-action="Index" asp-area="" asp-controller="Projects" class="nav-link">Projects</a>
                             </li>
-                        <li active-when="/Qualifications/Index" class="nav-item">
-                            <a asp-action="Index" asp-area="" asp-controller="Qualifications" class="nav-link">Qualifications</a>
-                        </li>
-                        <li active-when="/Resources/Index" class="nav-item">
-                            <a asp-action="Index" asp-area="" asp-controller="Resources" class="nav-link">Resources</a>
-                        </li>
-                        <li active-when="/Skills/Index" class="nav-item">
-                            <a asp-action="Index" asp-area="" asp-controller="Skills" class="nav-link">Skills</a>
-                        </li>
+                            <li active-when="/Qualifications/Index" class="nav-item">
+                                <a asp-action="Index" asp-area="" asp-controller="Qualifications" class="nav-link">Qualifications</a>
+                            </li>
+                            <li active-when="/Skills/Index" class="nav-item">
+                                <a asp-action="Index" asp-area="" asp-controller="Skills" class="nav-link">Skills</a>
+                            </li>
 
-                        <li class="nav-item">
-                            @await Component.InvokeAsync("AdminMenu")
-                        </li>
+                            <li class="nav-item">
+                                @await Component.InvokeAsync("AdminMenu")
+                            </li>
                         }
 
                     </ul>

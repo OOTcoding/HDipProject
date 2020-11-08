@@ -4,17 +4,18 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using PM.MVC.Models.EF;
 using PM.MVC.ViewModels;
 
 namespace PM.MVC.Controllers
 {
-    [Authorize(Roles = "Administrators")]
+    [Authorize(Roles = "Manager")]
     public class AdminController : Controller
     {
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<IdentityResource> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
 
-        public AdminController(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager)
+        public AdminController(UserManager<IdentityResource> userManager, RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
             _roleManager = roleManager;
@@ -39,7 +40,7 @@ namespace PM.MVC.Controllers
                 return View(model);
             }
 
-            var user = new IdentityUser { UserName = model.UserName, Email = model.Email };
+            var user = new IdentityResource { UserName = model.UserName, Email = model.Email };
             IdentityResult result = await _userManager.CreateAsync(user, model.Password);
 
             if (result.Succeeded)
@@ -57,7 +58,7 @@ namespace PM.MVC.Controllers
 
         public async Task<IActionResult> EditUser(string userId)
         {
-            IdentityUser user = await _userManager.FindByIdAsync(userId);
+            IdentityResource user = await _userManager.FindByIdAsync(userId);
 
             if (user == null)
             {
@@ -72,7 +73,7 @@ namespace PM.MVC.Controllers
         [HttpPost]
         public async Task<IActionResult> EditUser(EditUserViewModel model)
         {
-            IdentityUser user = await _userManager.FindByIdAsync(model.Id);
+            IdentityResource user = await _userManager.FindByIdAsync(model.Id);
 
             if (user != null)
             {
@@ -97,7 +98,7 @@ namespace PM.MVC.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteUser(string userId)
         {
-            IdentityUser user = await _userManager.FindByIdAsync(userId);
+            IdentityResource user = await _userManager.FindByIdAsync(userId);
 
             if (user != null)
             {
@@ -163,7 +164,7 @@ namespace PM.MVC.Controllers
 
             var editRoleViewModel = new EditRoleViewModel { Id = role.Id, RoleName = role.Name, Users = new List<string>() };
 
-            foreach (IdentityUser user in _userManager.Users)
+            foreach (IdentityResource user in _userManager.Users)
             {
                 if (await _userManager.IsInRoleAsync(user, role.Name))
                 {
@@ -294,7 +295,7 @@ namespace PM.MVC.Controllers
         {
             var model = new UserRoleViewModel { RoleId = role.Id };
 
-            foreach (IdentityUser user in _userManager.Users)
+            foreach (IdentityResource user in _userManager.Users)
             {
                 if (!await _userManager.IsInRoleAsync(user, role.Name))
                 {

@@ -9,7 +9,7 @@ using PM.MVC.Models.Services.Interfaces;
 
 namespace PM.MVC.Models.Services
 {
-    public class ResourceRepository : IDisposable, IQualificationRepository<Resource>
+    public class ResourceRepository : IDisposable, IQualificationRepository<IdentityResource>
     {
         private readonly PMAppDbContext _context;
 
@@ -18,24 +18,8 @@ namespace PM.MVC.Models.Services
             _context = context;
         }
 
-        public async Task<Resource> GetOneAsync(int id)
+        public async Task<IdentityResource> AddQualificationAsync(IdentityResource dbIdentityResource, Qualification createRequest)
         {
-            return await GetDbResource(id);
-        }
-
-        public async Task<IEnumerable<Resource>> GetAllAsync()
-        {
-            var dbResources = await _context.Resources.Include(x => x.ProjectResources).Include(x => x.QualificationResources).ThenInclude(x => x.Qualification).ToArrayAsync();
-
-            await _context.Skills.LoadAsync();
-
-            return dbResources;
-        }
-
-        public async Task<Resource> AddQualificationAsync(int resourceId, Qualification createRequest)
-        {
-            Resource dbResource = await GetDbResource(resourceId);
-
             Qualification dbQualification = await _context.Qualifications.FirstOrDefaultAsync(x => x.Skill.Name == createRequest.Skill.Name && x.Level == createRequest.Level);
 
             if (dbQualification == null)
@@ -45,76 +29,31 @@ namespace PM.MVC.Models.Services
                 dbQualification = new Qualification { Skill = dbSkill, Level = createRequest.Level };
             }
 
-            dbResource.QualificationResources.Add(new QualificationResource
+            dbIdentityResource.QualificationResources.Add(new QualificationIdentityResource
             {
-                Qualification = dbQualification, QualificationId = dbQualification.Id, Resource = dbResource, ResourceId = resourceId
+                Qualification = dbQualification, QualificationId = dbQualification.Id, IdentityResource = dbIdentityResource, IdentityResourceId = dbIdentityResource.Id
             });
             await _context.SaveChangesAsync();
 
-            return dbResource;
+            return dbIdentityResource;
         }
 
-        public async Task DeleteQualificationAsync(int resourceId, int qualificationId)
+        public async Task DeleteQualificationAsync(IdentityResource dbIdentityResource, int qualificationId)
         {
-            Resource dbResource = await GetDbResource(resourceId);
-
-            var dbQualification = dbResource.QualificationResources.FirstOrDefault(x => x.QualificationId == qualificationId);
+            var dbQualification = dbIdentityResource.QualificationResources.FirstOrDefault(x => x.QualificationId == qualificationId);
 
             if (dbQualification == null)
             {
                 throw new RequestedResourceNotFoundException();
             }
 
-            dbResource.QualificationResources.Remove(dbQualification);
-            await _context.SaveChangesAsync();
-        }
-
-        public async Task<Resource> AddAsync(Resource createRequest)
-        {
-            var dbResource = (await _context.Resources.AddAsync(createRequest)).Entity;
-            await _context.SaveChangesAsync();
-
-            return dbResource;
-        }
-
-        public async Task<Resource> UpdateAsync(Resource updateRequest)
-        {
-            Resource dbResource = await GetDbResource(updateRequest.Id);
-            dbResource.Name = updateRequest.Name;
-            _context.Entry(dbResource).State = EntityState.Modified;
-
-            await _context.SaveChangesAsync();
-
-            return dbResource;
-        }
-
-        public async Task DeleteAsync(int id)
-        {
-            Resource dbResource = await GetDbResource(id);
-
-            _context.Resources.Remove(dbResource);
+            dbIdentityResource.QualificationResources.Remove(dbQualification);
             await _context.SaveChangesAsync();
         }
 
         public void Dispose()
         {
             _context.Dispose();
-        }
-
-        private async Task<Resource> GetDbResource(int resourceId)
-        {
-            Resource dbResource = await _context.Resources.Include(x => x.ProjectResources)
-                                                .Include(x => x.QualificationResources)
-                                                .ThenInclude(x => x.Qualification)
-                                                .FirstOrDefaultAsync(x => x.Id == resourceId);
-
-            if (dbResource == null)
-            {
-                throw new RequestedResourceNotFoundException();
-            }
-
-            await _context.Skills.LoadAsync();
-            return dbResource;
         }
 
         private async Task<Skill> GetDbSkill(Skill createRequest)

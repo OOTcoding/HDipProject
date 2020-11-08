@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using PM.MVC.Models;
 using PM.MVC.Models.EF;
 using PM.MVC.Models.Services;
 using PM.MVC.Models.Services.Interfaces;
@@ -29,7 +30,7 @@ namespace PM.MVC
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<PMAppDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-            services.AddIdentity<IdentityUser, IdentityRole>(options =>
+            services.AddIdentity<IdentityResource, IdentityRole>(options =>
             {
                 options.Password.RequireNonAlphanumeric = true;
                 options.Password.RequireUppercase = true;
@@ -48,8 +49,9 @@ namespace PM.MVC
 
             services.AddScoped<IProjectRepository, ProjectRepository>();
             services.AddScoped<IRepository<Qualification>, QualificationRepository>();
-            services.AddScoped<IQualificationRepository<Resource>, ResourceRepository>();
+            services.AddScoped<IQualificationRepository<IdentityResource>, ResourceRepository>();
             services.AddScoped<IRepository<Skill>, SkillRepository>();
+            services.AddScoped<SummaryService>();
 
             services.AddControllersWithViews();
             services.AddRazorPages();
@@ -81,6 +83,8 @@ namespace PM.MVC
                 endpoints.MapControllerRoute(name: "default", pattern: "{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
             });
+
+            DbInitializer.Seed(app);
         }
     }
 }
