@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using PM.MVC.Models.EF;
 using PM.MVC.Models.Exceptions;
-using PM.MVC.Models.Services.Interfaces;
+using PM.MVC.Models.Interfaces;
 
-namespace PM.MVC.Models.Services
+namespace PM.MVC.Models.Repositories
 {
     public class SkillRepository : IDisposable, IRepository<Skill>
     {

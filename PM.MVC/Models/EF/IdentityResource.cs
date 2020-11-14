@@ -11,5 +11,7 @@ namespace PM.MVC.Models.EF
 
         [JsonIgnore]
         public virtual ICollection<ProjectIdentityResource> ProjectResources { get; set; }
+
+        public virtual ICollection<NotificationIdentityResource> NotificationIdentityResources { get; set; }
     }
 }

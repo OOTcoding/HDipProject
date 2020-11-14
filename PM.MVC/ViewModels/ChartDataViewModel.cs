@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using PM.MVC.Models.EF;
 
 namespace PM.MVC.ViewModels
 {

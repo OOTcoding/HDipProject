@@ -1,0 +1,33 @@
+{
+  "version": "1.0",
+  "defaultProvider": "unpkg",
+  "libraries": [
+    {
+      "library": "@microsoft/signalr@latest",
+      "destination": "wwwroot/js/signalr",
+      "files": [
+        "dist/browser/signalr.min.js"
+      ]
+    },
+    {
+      "provider": "cdnjs",
+      "library": "bootstrap-multiselect@0.9.15",
+      "destination": "wwwroot/lib/bootstrap/dist/"
+    }
+  ,
+{
+  "library": "bootstrap-multiselect@0.9.15",
+  "destination": "wwwroot/lib/bootstrap",
+  "files": [
+    "dist/css/bootstrap-multiselect.css",
+    "dist/js/bootstrap-multiselect.js",
+    "dist/js/bootstrap-multiselect.min.js"
+  ]
+}
+,
+{
+  "library": "bootstrap-multiselect@0.9.15",
+  "destination": "wwwroot/lib/bootstrap"
+}
+]
+}

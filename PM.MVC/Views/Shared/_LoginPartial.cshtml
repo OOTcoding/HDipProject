@@ -5,6 +5,16 @@
 <ul class="navbar-nav">
     @if (SignInManager.IsSignedIn(User))
     {
+        <li class="nav-item">
+            <span class="badge badge-warning notification-count" data-placement="bottom"
+                  data-popover-content="#list-popover"
+                  data-trigger="focus"
+                  id="notificationCount"
+                  rel="popover"
+                  tabindex="0"
+                  title="Notifications">
+            </span>
+        </li>
         <li active-when="/Manage/Index" class="nav-item">
             <a id="manage" class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello, @UserManager.GetUserName(User)!</a>
         </li>
@@ -24,3 +34,5 @@
         </li>
     }
 </ul>
+
+<div class="d-none" id="list-popover"></div>

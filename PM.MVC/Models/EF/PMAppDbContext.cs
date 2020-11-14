@@ -28,6 +28,10 @@ namespace PM.MVC.Models.EF
 
         public DbSet<QualificationIdentityResource> QualificationIdentityResources { get; set; }
 
+        public DbSet<Notification> Notifications { get; set; }
+
+        public DbSet<NotificationIdentityResource> UserNotifications { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -43,6 +47,10 @@ namespace PM.MVC.Models.EF
             modelBuilder.Entity<QualificationIdentityResource>().HasKey(x => new { x.QualificationId, ResourceId = x.IdentityResourceId });
             modelBuilder.Entity<QualificationIdentityResource>().HasOne(x => x.Qualification).WithMany(x => x.QualificationResources).HasForeignKey(x => x.QualificationId);
             modelBuilder.Entity<QualificationIdentityResource>().HasOne(x => x.IdentityResource).WithMany(x => x.QualificationResources).HasForeignKey(x => x.IdentityResourceId);
+
+            modelBuilder.Entity<NotificationIdentityResource>().HasKey(x => new { x.NotificationId, ResourceId = x.IdentityResourceId });
+            modelBuilder.Entity<NotificationIdentityResource>().HasOne(x => x.Notification).WithMany(x => x.NotificationIdentityResources).HasForeignKey(x => x.NotificationId);
+            modelBuilder.Entity<NotificationIdentityResource>().HasOne(x => x.IdentityResource).WithMany(x => x.NotificationIdentityResources).HasForeignKey(x => x.IdentityResourceId);
         }
     }
 }

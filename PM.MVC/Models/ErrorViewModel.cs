@@ -1,5 +1,3 @@
-using System;
-
 namespace PM.MVC.Models
 {
     public class ErrorViewModel

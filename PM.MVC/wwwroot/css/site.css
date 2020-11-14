@@ -196,6 +196,11 @@ header { height: 60px; }
     line-height: 50px;
 }
 
+
 .anychart-credits {
-    display: none
+    display: none;
+}
+
+.notification-count {
+    cursor: pointer;
 }

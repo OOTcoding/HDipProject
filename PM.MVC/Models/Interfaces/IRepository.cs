@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace PM.MVC.Models.Services.Interfaces
+namespace PM.MVC.Models.Interfaces
 {
     public interface IRepository<T>
     {

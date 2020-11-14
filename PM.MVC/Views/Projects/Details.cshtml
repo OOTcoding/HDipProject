@@ -1,8 +1,8 @@
-﻿@model Project
+﻿@using Microsoft.AspNetCore.Identity
+@model Project
+@inject SignInManager<IdentityResource> SignInManager
 
-@{
-    ViewData["Title"] = "Details";
-}
+@{ ViewData["Title"] = "Details"; }
 
 <div class="container mt-3">
   <div class="jumbotron pb-1">
@@ -11,30 +11,31 @@
 
     <table class="table table-sm">
       <thead>
-      <tr>
-        <th scope="col">#</th>
-        <th scope="col">Skill</th>
-        <th scope="col">Level</th>
-        <th scope="col"></th>
-      </tr>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Skill</th>
+          <th scope="col">Level</th>
+          <th scope="col"></th>
+        </tr>
       </thead>
       <tbody>
 
-      @foreach (ProjectQualification item in Model.ProjectQualifications)
-      {
-        <tr>
-          <th scope="row">@item.QualificationId</th>
-          <td>@item.Qualification.Skill.Name</td>
-          <td>@item.Qualification.Level.ToString()</td>
-          <td>
-
-            <form asp-action="DeleteQualification" asp-route-id="@Model.Id" asp-route-qualificationId="@item.QualificationId" method="post">
-              <input class="btn btn-danger" type="submit" value="Delete"/>
-            </form>
-
-          </td>
-        </tr>
-      }
+        @foreach (ProjectQualification item in Model.ProjectQualifications)
+        {
+          <tr>
+            <th scope="row">@item.QualificationId</th>
+            <td>@item.Qualification.Skill.Name</td>
+            <td>@item.Qualification.Level.ToString()</td>
+            <td>
+              @if (SignInManager.IsSignedIn(User) && User.IsInRole("Manager"))
+              {
+                <form asp-action="DeleteQualification" asp-route-id="@Model.Id" asp-route-qualificationId="@item.QualificationId" method="post">
+                  <input class="btn btn-danger" type="submit" value="Delete" />
+                </form>
+              }
+            </td>
+          </tr>
+        }
 
       </tbody>
     </table>
@@ -44,58 +45,63 @@
   </div>
 
   <div class="text-center">
-      <h1 class="display-4">Project Resources</h1>
+    <h1 class="display-4">Project Resources</h1>
   </div>
 
   <table class="table">
     <thead class="thead-dark">
-    <tr>
-      <th scope="col">#</th>
-      <th scope="col">Name</th>
-      <th scope="col"></th>
-      <th scope="col"></th>
-    </tr>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+        <th scope="col"></th>
+      </tr>
     </thead>
 
     <tbody class="accordion" id="accordionExample">
 
-    @foreach (var item in Model.ProjectResources)
-    {
-      <tr>
-        <th scope="row">@item.IdentityResourceId</th>
-        <td>@item.IdentityResource.Email</td>
-        <td class="w-50">
+      @foreach (var item in Model.ProjectResources)
+      {
+        <tr>
+          <th scope="row">@item.IdentityResourceId</th>
+          <td>@item.IdentityResource.Email</td>
+          <td class="w-50">
 
-          <button class="btn btn-link collapsed p-0" type="button" data-toggle="collapse" data-target="#collapseOne@(item.IdentityResourceId)" aria-expanded="false" aria-controls="collapseOne@(item.IdentityResourceId)">
-            Qualifications
-          </button>
+            <button class="btn btn-link collapsed p-0" type="button" data-toggle="collapse" data-target="#collapseOne@(item.IdentityResourceId)"
+                    aria-expanded="false" aria-controls="collapseOne@(item.IdentityResourceId)">
+              Qualifications
+            </button>
 
-          <ul id="collapseOne@(item.IdentityResourceId)" class="collapse" aria-labelledby="headingOne@(item.IdentityResourceId)" data-parent="#accordionExample">
-            @foreach (var q in item.IdentityResource.QualificationResources.Select(x => x.Qualification.ToString()))
+            <ul id="collapseOne@(item.IdentityResourceId)" class="collapse" aria-labelledby="headingOne@(item.IdentityResourceId)" data-parent="#accordionExample">
+              @foreach (var q in item.IdentityResource.QualificationResources.Select(x => x.Qualification.ToString()))
+              {
+                <li>@q</li>
+              }
+            </ul>
+
+          </td>
+          <td>
+            @if (SignInManager.IsSignedIn(User) && User.IsInRole("Manager"))
             {
-              <li>@q</li>
+              <form asp-action="DeleteResource" asp-route-id="@Model.Id" asp-route-resourceId="@item.IdentityResourceId" method="post">
+                <input class="btn btn-danger" type="submit" value="Delete" />
+              </form>
             }
-          </ul>
-
-        </td>
-        <td>
-
-          <form asp-action="DeleteResource" asp-route-id="@Model.Id" asp-route-resourceId="@item.IdentityResourceId" method="post">
-            <input class="btn btn-danger" type="submit" value="Delete"/>
-          </form>
-
-        </td>
-      </tr>
-    }
-
+          </td>
+        </tr>
+      }
     </tbody>
   </table>
 
+  @if (SignInManager.IsSignedIn(User) && User.IsInRole("Manager"))
+  {
+    @Html.ActionLink("Add resource", "AddResources", new { id = Model.Id }, new { @class = "btn btn-primary mb-5" })
+  }
 
-  @Html.ActionLink("Add resource", "AddResources", new { id = Model.Id }, new { @class = "btn btn-primary mb-5" })
 </div>
 
+<div class="col-lg-9">
+  <a asp-area="" class="btn btn-secondary" asp-action="Index" asp-controller="Projects">Back to List</a>
+  <a asp-action="ExportToExcel" class="btn btn-primary" asp-route-id="@Model.Id">Export to .xlsx</a>
+</div>
 
-<p>
-  @Html.ActionLink("Back to List", "Index")
-</p>

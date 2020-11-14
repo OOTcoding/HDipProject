@@ -1,19 +1,17 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using PM.MVC.Models;
+using Newtonsoft.Json;
+using PM.MVC.Infrastructure;
 using PM.MVC.Models.EF;
+using PM.MVC.Models.Interfaces;
+using PM.MVC.Models.Repositories;
 using PM.MVC.Models.Services;
-using PM.MVC.Models.Services.Interfaces;
+using PM.MVC.Models;
 
 namespace PM.MVC
 {
@@ -47,14 +45,30 @@ namespace PM.MVC
                 options.AccessDeniedPath = "/Identity/Account/AccessDenied";
             });
 
-            services.AddScoped<IProjectRepository, ProjectRepository>();
+            services.AddScoped<IRepository<Project>, ProjectRepository>();
             services.AddScoped<IRepository<Qualification>, QualificationRepository>();
-            services.AddScoped<IQualificationRepository<IdentityResource>, ResourceRepository>();
             services.AddScoped<IRepository<Skill>, SkillRepository>();
+            services.AddScoped<IQualificationService<Project>, ProjectQualificationService>();
+            services.AddScoped<IQualificationService<IdentityResource>, IdentityResourceQualificationService>();
+            services.AddScoped<IResourceService<Project>, ProjectResourceService>();
+            services.AddScoped<INotificationRepository, NotificationRepository>();
+            services.AddScoped<IExcelService<Qualification>, QualificationExcelService>();
+            services.AddScoped<IExcelService<IdentityResource>, IdentityResourceExcelService>();
             services.AddScoped<SummaryService>();
 
-            services.AddControllersWithViews();
+            services.AddControllersWithViews()
+                   .AddNewtonsoftJson(options =>
+                   {
+                       options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+                   });
+
             services.AddRazorPages();
+
+            services.AddSignalR()
+                    .AddNewtonsoftJsonProtocol(p =>
+                    {
+                        p.PayloadSerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+                    });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -82,9 +96,10 @@ namespace PM.MVC
             {
                 endpoints.MapControllerRoute(name: "default", pattern: "{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
+                endpoints.MapHub<SignalServer>("/signalServer");
             });
 
-            DbInitializer.Seed(app);
+            DbInitializer.Seed(app).Wait();
         }
     }
 }

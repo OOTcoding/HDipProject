@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -11,16 +12,16 @@ namespace PM.MVC.Models
 {
     public static class DbInitializer
     {
-        public static async void Seed(IApplicationBuilder applicationBuilder)
+        public static async Task Seed(IApplicationBuilder applicationBuilder)
         {
             using var serviceScope = applicationBuilder.ApplicationServices.CreateScope();
             var context = serviceScope.ServiceProvider.GetService<PMAppDbContext>();
 
-            await context.Database.EnsureDeletedAsync();
-            await context.Database.MigrateAsync();
-
             var userManager = serviceScope.ServiceProvider.GetService<UserManager<IdentityResource>>();
             var roleManager = serviceScope.ServiceProvider.GetService<RoleManager<IdentityRole>>();
+
+            await context.Database.EnsureDeletedAsync();
+            await context.Database.MigrateAsync();
 
             // initializing roles
             var managerRole = new IdentityRole("Manager");

@@ -3,7 +3,6 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PM.MVC.Models.EF;
 
 namespace PM.MVC.Migrations
@@ -215,6 +214,39 @@ namespace PM.MVC.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
+            modelBuilder.Entity("PM.MVC.Models.EF.Notification", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Text")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Notifications");
+                });
+
+            modelBuilder.Entity("PM.MVC.Models.EF.NotificationIdentityResource", b =>
+                {
+                    b.Property<int>("NotificationId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("IdentityResourceId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("IsRead")
+                        .HasColumnType("bit");
+
+                    b.HasKey("NotificationId", "IdentityResourceId");
+
+                    b.HasIndex("IdentityResourceId");
+
+                    b.ToTable("UserNotifications");
+                });
+
             modelBuilder.Entity("PM.MVC.Models.EF.Project", b =>
                 {
                     b.Property<int>("Id")
@@ -371,6 +403,21 @@ namespace PM.MVC.Migrations
                     b.HasOne("PM.MVC.Models.EF.IdentityResource", null)
                         .WithMany()
                         .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("PM.MVC.Models.EF.NotificationIdentityResource", b =>
+                {
+                    b.HasOne("PM.MVC.Models.EF.IdentityResource", "IdentityResource")
+                        .WithMany("NotificationIdentityResources")
+                        .HasForeignKey("IdentityResourceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PM.MVC.Models.EF.Notification", "Notification")
+                        .WithMany("NotificationIdentityResources")
+                        .HasForeignKey("NotificationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

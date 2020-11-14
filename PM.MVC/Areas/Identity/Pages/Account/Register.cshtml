@@ -10,7 +10,7 @@
 
 <h1>@ViewData["Title"]</h1>
 
-<div class="row justify-content-center">
+<div class="justify-content-center row">
     <div class="col-md-4">
         <form asp-route-returnUrl="@Model.ReturnUrl" method="post">
             <h4>Create a new account.</h4>
@@ -31,6 +31,13 @@
                 <input asp-for="Input.ConfirmPassword" class="form-control" />
                 <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
             </div>
+
+            <div class="form-group">
+                <label asp-for="Input.Qualifications"></label>
+                <select asp-for="Input.Qualifications.Ids" id="ChoosedQualificationsIds" multiple="multiple" class="form-control selectpicker" asp-items="@Model.Qualifications.Elements">
+                </select>
+            </div>
+
             <div class="form-group">
                 <a asp-action="Index" class="btn btn-secondary">Back to home</a>
                 <input class="btn btn-primary" type="submit" value="Register" asp-route-returnUrl="@Url.Action("Summary", "Home", new { area = "" })">
@@ -41,4 +48,29 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        $('#ChoosedQualificationsIds').selectpicker();
+
+        $('#ChoosedQualificationsIds').on('changed.bs.select', (e, clickedIndex, isSelected, previousValue) => {
+            const selectedOptions = [...$('#ChoosedQualificationsIds option:selected').map((index, element) => element.outerText.split(' - ')[0])];
+            const nonSelectedOptions = $('#ChoosedQualificationsIds option').filter(function () {
+                return !$(this).is(':selected');
+            });
+            nonSelectedOptions.each(function (index, element) {
+
+                console.log(`index:${index}, clickedIndex:${clickedIndex}`);
+
+                const text = element.outerText.split(' - ')[0];
+                const item = $('.selectpicker').find(`[value=${$(this).val()}]`);
+
+                if (selectedOptions.find(x => x === text) !== undefined && isSelected) {
+                    item.prop('disabled', true);
+                    $('.selectpicker').selectpicker('refresh');
+                } else if (selectedOptions.find(x => x === text) === undefined && !isSelected) {
+                    item.prop('disabled', false);
+                    $('.selectpicker').selectpicker('refresh');
+                }
+            });
+        });
+    </script>
 }

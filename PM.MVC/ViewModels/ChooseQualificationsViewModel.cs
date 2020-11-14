@@ -5,6 +5,11 @@ namespace PM.MVC.ViewModels
 {
     public class ChooseQualificationsViewModel
     {
+        public ChooseQualificationsViewModel()
+        {
+            SuitableQualifications = new List<ChooseQualificationsListItem>();
+        }
+
         public List<ChooseQualificationsListItem> SuitableQualifications { get; set; }
     }
 

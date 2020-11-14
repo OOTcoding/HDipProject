@@ -1,8 +1,10 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PM.MVC.Models.EF;
-using PM.MVC.Models.Services.Interfaces;
+using PM.MVC.Models.Interfaces;
 
 namespace PM.MVC.Controllers
 {
@@ -17,9 +19,17 @@ namespace PM.MVC.Controllers
         }
 
         // GET: Skills
-        public async Task<ActionResult> Index()
+        public async Task<ActionResult> Index(string searchString)
         {
-            return View(await _repository.GetAllAsync());
+            var skills = await _repository.GetAllAsync();
+
+            if (string.IsNullOrWhiteSpace(searchString))
+            {
+                return View(skills);
+            }
+
+            IEnumerable<Skill> filteredSkills = skills.Where(x => x.Name.ToLowerInvariant().Contains(searchString.ToLowerInvariant()));
+            return View(filteredSkills);
         }
 
         // GET: Skills/Create
@@ -57,7 +67,6 @@ namespace PM.MVC.Controllers
                 await _repository.UpdateAsync(skill);
                 return RedirectToAction("Index");
             }
-
             return View(skill);
         }
 
@@ -68,6 +77,5 @@ namespace PM.MVC.Controllers
             await _repository.DeleteAsync(id);
             return RedirectToAction("Index");
         }
-
     }
 }
