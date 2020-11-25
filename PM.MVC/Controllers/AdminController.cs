@@ -230,7 +230,7 @@ namespace PM.MVC.Controllers
                 return RedirectToAction("RoleManagement", _roleManager.Roles);
             }
 
-            UserRoleViewModel model = await GetUserRoleViewModel(role);
+            UserRoleViewModel model = await GetUserRoleViewModelNotInRole(role);
 
             return View(model);
         }
@@ -292,6 +292,21 @@ namespace PM.MVC.Controllers
         }
 
         private async Task<UserRoleViewModel> GetUserRoleViewModel(IdentityRole role)
+        {
+            var model = new UserRoleViewModel { RoleId = role.Id };
+
+            foreach (var user in _userManager.Users)
+            {
+                if (await _userManager.IsInRoleAsync(user, role.Name))
+                {
+                    model.Users.Add(user);
+                }
+            }
+
+            return model;
+        }
+
+        private async Task<UserRoleViewModel> GetUserRoleViewModelNotInRole(IdentityRole role)
         {
             var model = new UserRoleViewModel { RoleId = role.Id };
 
