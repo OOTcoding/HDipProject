@@ -79,7 +79,8 @@ namespace PM.MVC.Areas.Identity.Pages.Account
             IEnumerable<Qualification> qualifications = await _qualificationRepository.GetAllAsync();
             Qualifications = new MultiSelectViewModel
             {
-                Elements = qualifications.Select(x => new SelectListItem { Text = $"{x.Skill.Name} - {x.Level}", Value = x.Id.ToString() }).ToList(), Ids = new int[0]
+                Elements = qualifications.Select(x => new SelectListItem { Text = $"{x.Skill.Name} - {x.Level}", Value = x.Id.ToString() }).ToList(),
+                Ids = new int[0]
             };
         }
 
@@ -92,8 +93,11 @@ namespace PM.MVC.Areas.Identity.Pages.Account
                 var user = new IdentityResource { UserName = Input.Email, Email = Input.Email };
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
-                int[] choosedQualificationsIds = Input.Qualifications.Ids;
-                await _qualificationService.AddQualificationsAsync(user, choosedQualificationsIds);
+                if (Input.Qualifications != null)
+                {
+                    int[] choosedQualificationsIds = Input.Qualifications.Ids;
+                    await _qualificationService.AddQualificationsAsync(user, choosedQualificationsIds);
+                }
 
                 if (result.Succeeded)
                 {
@@ -106,7 +110,7 @@ namespace PM.MVC.Areas.Identity.Pages.Account
                         values: new { area = "Identity", userId = user.Id, code = code, returnUrl = returnUrl },
                         protocol: Request.Scheme);
 
-                    await _emailSender.SendEmailAsync(Input.Email, 
+                    await _emailSender.SendEmailAsync(Input.Email,
                         "Confirm your email",
                         $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
@@ -115,8 +119,8 @@ namespace PM.MVC.Areas.Identity.Pages.Account
                         return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
                     }
 
-                        await _signInManager.SignInAsync(user, isPersistent: false);
-                        return LocalRedirect(returnUrl);
+                    await _signInManager.SignInAsync(user, isPersistent: false);
+                    return LocalRedirect(returnUrl);
                 }
 
                 foreach (var error in result.Errors)
@@ -124,6 +128,13 @@ namespace PM.MVC.Areas.Identity.Pages.Account
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
             }
+
+            IEnumerable<Qualification> qualifications = await _qualificationRepository.GetAllAsync();
+            Qualifications = new MultiSelectViewModel
+            {
+                Elements = qualifications.Select(x => new SelectListItem { Text = $"{x.Skill.Name} - {x.Level}", Value = x.Id.ToString() }).ToList(),
+                Ids = new int[0]
+            };
 
             // If we got this far, something failed, redisplay form
             return Page();

@@ -40,8 +40,10 @@
       </tbody>
     </table>
 
-    <a asp-action="AddQualifications" asp-route-id="@Model.Id" class="btn btn-primary btn-sm mb-3">Add Requirement</a>
-
+    @if (SignInManager.IsSignedIn(User) && User.IsInRole("Manager"))
+    {
+      <a asp-action="AddQualifications" asp-route-id="@Model.Id" class="btn btn-primary btn-sm mb-3">Add Requirement</a>
+    }
   </div>
 
   <div class="text-center">

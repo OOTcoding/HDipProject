@@ -2,7 +2,7 @@
 
 <div class="no-gutters row vertical-center">
     <div class="col-6 col-md-4">
-        <form asp-action="SummaryChartData" method="post">
+        <form method="post" asp-action="SummaryChartData">
 
             <button class="btn btn-widget text-dark yellow" name="ButtonType" type="submit" value="Project">
 
@@ -87,6 +87,7 @@
     label.width("100%");
     label.height("100%");
     label.fontColor("#60727b");
+    label.fontSize(14);
     label.hAlign("center");
     label.vAlign("middle");
 

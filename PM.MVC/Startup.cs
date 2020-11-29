@@ -99,7 +99,7 @@ namespace PM.MVC
                 endpoints.MapHub<SignalServer>("/signalServer");
             });
 
-            DbInitializer.Seed(app).Wait();
+            //DbInitializer.Seed(app).Wait();
         }
     }
 }

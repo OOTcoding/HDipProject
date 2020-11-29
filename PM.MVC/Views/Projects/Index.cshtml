@@ -4,82 +4,82 @@
 
 @{ ViewData["Title"] = "Project list"; }
 
-
-
 <div class="container">
-    <h2>Project list</h2>
+  <h2>Project list</h2>
 
-    <table class="table table-borderless table-hover">
-        <thead>
-            <tr>
-                <th scope="col">#</th>
-                <th scope="col">Name</th>
-                <th scope="col">Resources Assigned</th>
-                <th scope="col">Required qualification</th>
-                <th scope="col">Duration</th>
-                <th scope="col">Project manager</th>
-                <th scope="col">Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (Project project in Model)
+  <table class="table table-borderless table-hover">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Name</th>
+        <th scope="col">Resources Assigned</th>
+        <th scope="col">Required qualification</th>
+        <th scope="col">Duration</th>
+        <th scope="col">Project manager</th>
+        <th scope="col">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      @foreach (Project project in Model)
+      {
+        <tr>
+          <th scope="row">@project.Id</th>
+          <td>@project.Name</td>
+          <td>@project.ProjectResources.Count</td>
+          <td>@project.ProjectQualifications.Count</td>
+          <td>@(project.FromDuration.ToShortDateString()) - @(project.ToDuration.ToShortDateString())</td>
+          <td>@project.Manager?.Email</td>
+
+          <td>
+            <a asp-action="Details" asp-route-id="@project.Id" class="btn btn-primary btn-sm">Details</a>
+
+            @if (SignInManager.IsSignedIn(User) && User.IsInRole("Manager"))
             {
-                <tr>
-                    <th scope="row">@project.Id</th>
-                    <td>@project.Name</td>
-                    <td>@project.ProjectResources.Count</td>
-                    <td>@project.ProjectQualifications.Count</td>
-                    <td>@(project.FromDuration.ToShortDateString()) - @(project.ToDuration.ToShortDateString())</td>
-                    <td>@project.Manager?.Email</td>
+              <a asp-action="Edit" asp-route-id="@project.Id" class="btn btn-sm btn-warning">Edit</a>
+              <a asp-action="Delete" asp-route-id="@project.Id" class="btn btn-danger btn-sm"
+                 data-toggle="modal" data-target="#exampleModalCenter@(project.Id)">
+                Delete
+              </a>
 
-                    <td>
-                        <a asp-action="Details" asp-route-id="@project.Id" class="btn btn-primary btn-sm">Details</a>
+              <!-- Modal -->
+              <div class="fade modal" id="exampleModalCenter@(project.Id)" tabindex="-1" role="dialog"
+                   aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLongTitle">Delete</h5>
+                      <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                      @($"Are you sure you want to delete `{project.Name}`?")
+                    </div>
+                    <div class="modal-footer">
+                      <button class="btn btn-secondary" data-dismiss="modal"
+                              type="button">
+                        No
+                      </button>
 
-                        @if (SignInManager.IsSignedIn(User) && User.IsInRole("Manager"))
-                        {
-                            <a asp-action="Edit" asp-route-id="@project.Id" class="btn btn-sm btn-warning">Edit</a>
-                            <a asp-action="Delete" asp-route-id="@project.Id" class="btn btn-danger btn-sm"
-                               data-toggle="modal" data-target="#exampleModalCenter@(project.Id)">
-                                Delete
-                            </a>
+                      <form asp-action="Delete" asp-route-id="@project.Id" method="post" role="form">
+                        <input class="btn btn-danger" type="submit" value="Yes" />
+                      </form>
 
-                            <!-- Modal -->
-                            <div class="fade modal" id="exampleModalCenter@(project.Id)" tabindex="-1" role="dialog"
-                                 aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                                <div class="modal-dialog modal-dialog-centered" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="exampleModalLongTitle">Delete</h5>
-                                            <button aria-label="Close" class="close" data-dismiss="modal" type="button">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                        <div class="modal-body">
-                                            @($"Are you sure you want to delete `{project.Name}`?")
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button class="btn btn-secondary" data-dismiss="modal"
-                                                    type="button">
-                                                No
-                                            </button>
-
-                                            <form asp-action="Delete" asp-route-id="@project.Id" method="post" role="form">
-                                                <input class="btn btn-danger" type="submit" value="Yes" />
-                                            </form>
-
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        }
-                    </td>
-                </tr>
-
+                    </div>
+                  </div>
+                </div>
+              </div>
             }
-        </tbody>
-    </table>
+          </td>
+        </tr>
 
+      }
+    </tbody>
+  </table>
+  @if (SignInManager.IsSignedIn(User) && User.IsInRole("Manager"))
+  {
     <p>
-        <a asp-action="Create" class="btn btn-primary mb-5">New project</a>
+      <a asp-action="Create" class="btn btn-primary mb-5">New project</a>
     </p>
+  }
 </div>
